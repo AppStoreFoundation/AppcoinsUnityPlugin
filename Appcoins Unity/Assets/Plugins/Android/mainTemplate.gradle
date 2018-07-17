@@ -65,6 +65,9 @@ android {
       useProguard false
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-unity.txt'
       jniDebuggable true
+      resValue "bool", "APPCOINS_ENABLE_POA", "true"
+      resValue "bool", "APPCOINS_ENABLE_DEBUG", "true"
+      resValue "string", "APPCOINS_PREFAB", "AppcoinsUnity1"
     }
     release {
       minifyEnabled false
