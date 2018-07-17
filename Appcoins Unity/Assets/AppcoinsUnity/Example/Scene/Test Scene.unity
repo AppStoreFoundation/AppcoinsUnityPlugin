@@ -641,10 +641,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 4
       objectReference: {fileID: 0}
-    - target: {fileID: 1087073868984312, guid: 53ffe963ba9e4624aac3b31b1619f682, type: 2}
-      propertyPath: m_Name
-      value: AppcoinsUnity1
-      objectReference: {fileID: 0}
     - target: {fileID: 114267058133941440, guid: 53ffe963ba9e4624aac3b31b1619f682,
         type: 2}
       propertyPath: purchaserObject
