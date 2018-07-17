@@ -80,7 +80,7 @@ namespace Aptoide.AppcoinsUnity
             if (previousDebug != enableDebug)
             {
                 previousDebug = enableDebug;
-                updateVarOnMainTemplateGradle(DEBUG, enableDebug.ToString());
+                updateVarOnMainTemplateGradle(DEBUG, previousDebug.ToString());
             }
 
             if(previousName == null || !previousName.Equals(this.name))
@@ -169,7 +169,7 @@ namespace Aptoide.AppcoinsUnity
                     while(line[i].Equals("\t") || line[i].Equals(" "))
                     {
                         i++;
-                        newLine = string.Concat(" ", "");
+                        newLine = string.Concat("\t", "");
                     }
 
                     newLine = string.Concat(newLine, line);
@@ -207,7 +207,7 @@ namespace Aptoide.AppcoinsUnity
             string line;
             string contentToChange = null;
             string contentInTemplate = null;
-            int lineToChange = -1;
+            ArrayList linesToChange = new ArrayList();
             int counter = 0;
             int numberOfSpaces = 0;
             ArrayList fileLines = new ArrayList();
@@ -225,12 +225,6 @@ namespace Aptoide.AppcoinsUnity
                 contentInTemplate = "resValue \"bool\", \"APPCOINS_ENABLE_DEBUG\", \"" + ((varToCheck.ToLower()).Equals("true") ? "false" : "true") + "\"";
             }
 
-            else if(varName.Equals(NAME))
-            {
-                contentToChange = "resValue \"string\", \"APPCOINS_PREFAB\", \"" + varToCheck + "\"";
-                contentInTemplate = "resValue \"string\", \"APPCOINS_PREFAB\", \"" + previousName + "\"";
-            }
-
             System.IO.StreamReader fileReader = new System.IO.StreamReader(pathToMainTemplate);
 
             //Read all lines and get the line numer to be changed
@@ -246,7 +240,7 @@ namespace Aptoide.AppcoinsUnity
 
                 if (line.Length == contentInTemplate.Length && line.Substring(0, contentInTemplate.Length).Equals(contentInTemplate))
                 {
-                    lineToChange = counter;
+                    linesToChange.Add(counter);
                     numberOfSpaces = (int)a[1];
                 }
 
@@ -255,14 +249,19 @@ namespace Aptoide.AppcoinsUnity
 
             fileReader.Close();
 
-            if (lineToChange > -1)
+            foreach(int lineToChange in linesToChange)
             {
-                for (int i = 0; i < numberOfSpaces; i++)
+                if (lineToChange > -1)
                 {
-                    contentToChange = string.Concat(" ", contentToChange);
-                }
+                    string change = contentToChange;
 
-                fileLines[lineToChange] = contentToChange;
+                    for (int i = 0; i < numberOfSpaces; i++)
+                    {
+                        change = string.Concat(" ", change);
+                    }
+
+                    fileLines[lineToChange] = change;
+                }
             }
 
             System.IO.StreamWriter fileWriter = new System.IO.StreamWriter(pathToMainTemplate);
