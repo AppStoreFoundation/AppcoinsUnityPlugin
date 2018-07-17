@@ -23,9 +23,8 @@ allprojects {
 apply plugin: 'com.android.application'
 
 dependencies {
-  compile fileTree(dir: 'libs', include: ['*.jar'])
+  compile fileTree(dir: 'libs', excludes: ['com.android.support.support-annotations*.jar'], include: ['*.jar'])
   api 'com.asfoundation:appcoins:0.3.6a'
-  implementation(name: 'appcoinsunity-release', ext:'aar')
   **DEPS**
 }
 
