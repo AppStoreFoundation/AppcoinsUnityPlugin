@@ -15,7 +15,7 @@ public class CustomBuildMenuItem : EditorWindow
 {
     public const string DEFAULT_UNITY_PACKAGE_IDENTIFIER = "com.Company.ProductName";
 
-    [MenuItem("AppCoins/Setup")]
+    //[MenuItem("AppCoins/Setup")]
     public static void Setup() {
         //Check if the active platform is Android. If it isn't change it
         if (EditorUserBuildSettings.activeBuildTarget != BuildTarget.Android)
@@ -58,6 +58,8 @@ public class CustomBuildMenuItem : EditorWindow
     [MenuItem("AppCoins/Custom Android Build")]
     public static void CallAndroidCustomBuild()
     {
+        Setup(); //Make sure settings are correctly applied
+
         CustomBuild buildObj = new CustomBuild();
         buildObj.ExecuteCustomBuild("android");
     }
@@ -539,7 +541,8 @@ public class CustomBuildWindow : EditorWindow
 
         float scenesPartHeight = debugModeHeight + 20;
         GUI.Label(new Rect(5, scenesPartHeight, 590, 40), "Select what scenes you want to export:\n(Only scenes that are in build settings are true by default)");
-        float scrollViewLength = scenes.Length * 25f;
+        int scenesLength = scenes != null ? scenes.Length : 0;
+        float scrollViewLength = scenesLength * 25f;
         scenesPartHeight += 30;
         scrollViewVector = GUI.BeginScrollView(new Rect(5, scenesPartHeight, 590, 215), scrollViewVector, new Rect(0, 0, 500, scrollViewLength));
         for (int i = 0; i < scenes.Length; i++)
