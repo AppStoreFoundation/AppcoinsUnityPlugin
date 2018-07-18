@@ -646,6 +646,11 @@ Prefab:
       propertyPath: purchaserObject
       value: 
       objectReference: {fileID: 1936063539}
+    - target: {fileID: 114267058133941440, guid: 53ffe963ba9e4624aac3b31b1619f682,
+        type: 2}
+      propertyPath: enablePOA
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 53ffe963ba9e4624aac3b31b1619f682, type: 2}
   m_IsPrefabAsset: 0

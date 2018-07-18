@@ -40,6 +40,8 @@ public class CustomBuild
     public static string adbPath = EditorPrefs.GetString("AndroidSdkRoot") + "/platform-tools/adb";
     public static bool runAdbInstall = false;
     public static bool runAdbRun = false;
+    public static bool buildDebug = true;
+    public static bool buildRelease = false;
     public static bool debugMode = false;
     // public static string mainActivityPath = "com.unity3d.player.UnityPlayerActivity";
     public static string mainActivityPath = ".UnityPlayerActivity";
@@ -320,6 +322,12 @@ public class CustomBuild
 
         string gradleCmd = "'" + gradlePath + "gradle'";
         string gradleArgs = "build";
+
+        if (CustomBuild.buildDebug && !CustomBuild.buildRelease)
+            gradleArgs = "assembleDebug";
+        if (!CustomBuild.buildDebug && CustomBuild.buildRelease)
+            gradleArgs = "assembleRelease";
+        
         string cmdPath = "'" + path + "/" + PlayerSettings.productName + "'";
 
         if(CustomBuild.debugMode)
@@ -475,6 +483,11 @@ public class CustomBuildWindow : EditorWindow
         GUI.Label(new Rect(5, gradlePartHeight, 590, 40), "Select the gradle path");
         gradlePartHeight += 20;
         CustomBuild.gradlePath = GUI.TextField(new Rect(5, gradlePartHeight, 590, 20), CustomBuild.gradlePath);
+        gradlePartHeight += 20;
+        CustomBuild.buildDebug = GUI.Toggle(new Rect(5, gradlePartHeight, 590, 20), CustomBuild.buildDebug, "Build Debug?");
+        gradlePartHeight += 20;
+        CustomBuild.buildRelease = GUI.Toggle(new Rect(5, gradlePartHeight, 590, 20), CustomBuild.buildRelease, "Build Release?");
+
 
         float adbPartHeight = gradlePartHeight + 20;
         GUI.Label(new Rect(5, adbPartHeight, 590, 40), "Select the adb path");
@@ -496,7 +509,9 @@ public class CustomBuildWindow : EditorWindow
 
         float scenesPartHeight = debugModeHeight + 20;
         GUI.Label(new Rect(5, scenesPartHeight, 590, 40), "Select what scenes you want to export:\n(Only scenes that are in build settings are true by default)");
-        float scrollViewLength = scenes.Length * 25f;
+        float scrollViewLength = 0f;
+        if (scenes != null)
+            scrollViewLength = scenes.Length * 25f;
         scenesPartHeight += 30;
         scrollViewVector = GUI.BeginScrollView(new Rect(5, scenesPartHeight, 590, 215), scrollViewVector, new Rect(0, 0, 500, scrollViewLength));
         for (int i = 0; i < scenes.Length; i++)
