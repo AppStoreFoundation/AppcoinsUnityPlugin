@@ -14,7 +14,7 @@ public class ProductMaker
         AppcoinsSku asset = ScriptableObject.CreateInstance<AppcoinsSku>();
 
         if (!AssetDatabase.IsValidFolder("Assets/Products")) {
-            string guid = AssetDatabase.CreateFolder("Assets", "Products");    
+            AssetDatabase.CreateFolder("Assets", "Products");    
         }
 
         AssetDatabase.CreateAsset(asset, "Assets/AppcoinsUnity/Products/" + DEFAULT_APPCOINS_PRODUCT_NAME + "_Appcoins.asset");

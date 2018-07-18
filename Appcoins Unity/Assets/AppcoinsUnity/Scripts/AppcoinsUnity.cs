@@ -30,7 +30,6 @@ namespace Aptoide.AppcoinsUnity
         [Header("Add your purchaser object here")]
         public AppcoinsPurchaser purchaserObject;
 
-        private string NAME = "NAME";
         private string previousName = null;
 
         private string POA = "POA";
@@ -94,10 +93,21 @@ namespace Aptoide.AppcoinsUnity
         //called to add all skus specified in the inpector window.
         private void addAllSKUs()
         {
+            bool failed = false;
             for (int i = 0; i < products.Length; i++)
             {
-                _class.CallStatic("addNewSku", products[i].Name, products[i].SKUID, products[i].Price);
+                AppcoinsSku product = products[i];
+                if (product != null)
+                    _class.CallStatic("addNewSku", product.Name, product.SKUID, product.Price);
+                else
+                    failed = true;
             }
+
+#if UNITY_EDITOR
+                if (failed)
+                    EditorUtility.DisplayDialog("AppCoins Unity Integration", "Warning: You have null products on AppCoinsUnity objects products list", "OK");
+#endif
+
         }
 
         //method used in making purchase
