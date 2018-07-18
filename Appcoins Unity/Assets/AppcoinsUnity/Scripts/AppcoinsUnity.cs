@@ -29,8 +29,6 @@ namespace Aptoide.AppcoinsUnity
         public AppcoinsSku[] products;
         [Header("Add your purchaser object here")]
         public AppcoinsPurchaser purchaserObject;
-
-        private string NAME = "NAME";
         private string previousName = null;
 
         private string POA = "POA";
@@ -50,6 +48,10 @@ namespace Aptoide.AppcoinsUnity
         // Use this for initialization
         void Start()
         {
+#if UNITY_EDITOR
+            if (enablePOA)
+                EditorUtility.DisplayDialog("AppCoins Unity Integration", "PoA is enabled and should have started now", "OK");
+#else
             //get refference to java class
             _class = new AndroidJavaClass("com.aptoide.appcoinsunity.UnityAppcoins");
 
@@ -64,6 +66,7 @@ namespace Aptoide.AppcoinsUnity
 
             //start sdk
             _class.CallStatic("start");
+#endif
 
         }
 
