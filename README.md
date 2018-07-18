@@ -14,21 +14,27 @@ This plugin is developed from a fork of the unofficial unity plugin for AppCoins
 
 ![picture](Screenshots/shot2.png)
 
-2. From the Assets -> AppcoinsUnity -> Prefabs folder drag and drop the _AppcoinsUnity_ prefab into your scene or hierarchy window. If you want you can change the name of AppcoinsUnity gameobject. **NOTE: If the only change you are doing in your project before building is changing the name of AppcoinsUnity gameobject, you have to ckick "apply" in the inspector window in order to valid this change.**
+2. On the top bar click _AppCoins_
+
+3. Click _Setup_.
+
+![picture](Screenshots/setup.png)
+
+4. From the Assets -> AppcoinsUnity -> Prefabs folder drag and drop the _AppcoinsUnity_ prefab into your scene or hierarchy window. If you want you can change the name of AppcoinsUnity gameobject. **NOTE: If the only change you are doing in your project before building is changing the name of AppcoinsUnity gameobject, you have to ckick "apply" in the inspector window in order to valid this change.**
 
 ![picture](Screenshots/shot3.png)
 
-3. In the inspector window where you have _Receiving Address_, change the text to your AppCoins wallet address where you would like to receive your AppCoins.
+5. In the inspector window where you have _Receiving Address_, change the text to your AppCoins wallet address where you would like to receive your AppCoins.
 
-4. Check the _enable debug_ checkbox if you would like to be able to use testnets like Ropsten for testing your AppCoins In-App Billing integration.
+6. Check the _enable debug_ checkbox if you would like to be able to use testnets like Ropsten for testing your AppCoins In-App Billing integration.
 **Note: Uncheck this in production to avoid testnet purchases.**
 
-5. You need to create in-app products.
+7. You need to create in-app products.
 To create an _AppcoinsProduct_ click Assets -> Create -> Appcoins Product, fill in the product info and click Apply. Everytime you make a change to the product you should click Apply. This will create the product in a folder called "Products" inside the Assets folder. Create as many as your in-app products.
 
 ![picture](Screenshots/CreateAppcoinsProduct.png)
 
-6. Drag and drop all the products you created to the field on the _AppcoinsUnity_ gameobject where you have products.
+8. Drag and drop all the products you created to the field on the _AppcoinsUnity_ gameobject where you have products.
 
 **Note: in the image below 3 products were created and added (Chocolate, Dodo and Monster Drink).**
 
@@ -36,7 +42,7 @@ To create an _AppcoinsProduct_ click Assets -> Create -> Appcoins Product, fill 
 
 **Note: Checking "Add to list" while creating the product will add the product to the products list automatically for you**
 
-7. Create purchaser class in Unity C# by inheriting from the AppcoinsPurchaser Class:
+9. Create purchaser class in Unity C# by inheriting from the AppcoinsPurchaser Class:
 
 ```
 
@@ -76,12 +82,11 @@ public class Purchaser : AppcoinsPurchaser {
 }
 ```
 
-8. Create an object in your scene and add the purchaser script you created to it. Drag and drop the purchaser object to the slot where you have the _Purchaser Object_ on the _AppcoinsUnity_ prefab you added to your scene earlier.
+10. Create an object in your scene and add the purchaser script you created to it. Drag and drop the purchaser object to the slot where you have the _Purchaser Object_ on the _AppcoinsUnity_ prefab you added to your scene earlier.
 
 ![picture](Screenshots/shot6.png)
 
 ## To build the project
-
 
 Go to the build menu (File -> Build Settings)
 1. Check that the build system is set to "Gradle"
@@ -108,7 +113,7 @@ You should have your game running on the phone!
 
 1. Close the _Player Settings_ window
 
-2. On the top bar click _Custom Build_
+2. On the top bar click _AppCoins_
 
 3. Click _Custom Android Build_
 
