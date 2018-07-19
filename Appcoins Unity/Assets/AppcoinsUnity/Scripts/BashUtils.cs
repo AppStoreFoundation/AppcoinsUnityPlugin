@@ -71,7 +71,6 @@ public class Bash : Terminal
 	    newProcess.StartInfo = processInfo;
 	    newProcess.Start();
 
-        //TODO FIXME this file might not be created ever!
         //For the process to complete we check with, 5s interval, for the existence of ProcessCompleted.out
         bool fileExists;
         bool condition;

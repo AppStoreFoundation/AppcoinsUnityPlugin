@@ -31,7 +31,7 @@ public class CustomBuildMenuItem : EditorWindow
         if (PlayerSettings.Android.minSdkVersion < AndroidSdkVersions.AndroidApiLevel21)
             PlayerSettings.Android.minSdkVersion = AndroidSdkVersions.AndroidApiLevel21;
 
-        //Check if the bunde id is the default one and change it if it to avoid that error        
+        //Check if the bunde id is the default one and change it if it to avoid that error
 #if UNITY_5_6_OR_NEWER
         if (PlayerSettings.applicationIdentifier.Equals(DEFAULT_UNITY_PACKAGE_IDENTIFIER))
             PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, "com.aptoide.appcoins");
@@ -39,7 +39,7 @@ public class CustomBuildMenuItem : EditorWindow
 #else
             if (PlayerSettings.bundleIdentifier.Equals(DEFAULT_UNITY_PACKAGE_IDENTIFIER))
                 PlayerSettings.bundleIdentifier = "com.aptoide.appcoins";
-        
+
 #endif
 
         //Make sure that gradle is the selected build system
@@ -85,6 +85,8 @@ public class CustomBuild
     public static string adbPath = EditorPrefs.GetString("AndroidSdkRoot") + "/platform-tools/adb";
     public static bool runAdbInstall = false;
     public static bool runAdbRun = false;
+    public static bool buildDebug = true;
+    public static bool buildRelease = false;
     public static bool debugMode = false;
     // public static string mainActivityPath = "com.unity3d.player.UnityPlayerActivity";
     public static string mainActivityPath = ".UnityPlayerActivity";
@@ -365,6 +367,12 @@ public class CustomBuild
 
         string gradleCmd = "'" + gradlePath + "gradle'";
         string gradleArgs = "build";
+
+        if (CustomBuild.buildDebug && !CustomBuild.buildRelease)
+            gradleArgs = "assembleDebug";
+        if (!CustomBuild.buildDebug && CustomBuild.buildRelease)
+            gradleArgs = "assembleRelease";
+
         string cmdPath = "'" + path + "/" + PlayerSettings.productName + "'";
 
         if(CustomBuild.debugMode)
@@ -520,6 +528,11 @@ public class CustomBuildWindow : EditorWindow
         GUI.Label(new Rect(5, gradlePartHeight, 590, 40), "Select the gradle path");
         gradlePartHeight += 20;
         CustomBuild.gradlePath = GUI.TextField(new Rect(5, gradlePartHeight, 590, 20), CustomBuild.gradlePath);
+        gradlePartHeight += 20;
+        CustomBuild.buildDebug = GUI.Toggle(new Rect(5, gradlePartHeight, 590, 20), CustomBuild.buildDebug, "Build Debug?");
+        gradlePartHeight += 20;
+        CustomBuild.buildRelease = GUI.Toggle(new Rect(5, gradlePartHeight, 590, 20), CustomBuild.buildRelease, "Build Release?");
+
 
         float adbPartHeight = gradlePartHeight + 20;
         GUI.Label(new Rect(5, adbPartHeight, 590, 40), "Select the adb path");
@@ -534,7 +547,7 @@ public class CustomBuildWindow : EditorWindow
         adbRunPartHeight += 20;
         CustomBuild.mainActivityPath = GUI.TextField(new Rect(5, adbRunPartHeight, 590, 20), CustomBuild.mainActivityPath);
         adbRunPartHeight += 20;
-        CustomBuild.runAdbRun = GUI.Toggle(new Rect(5, adbRunPartHeight, 590, 20), CustomBuild.runAdbRun, "Run build when done?"); 
+        CustomBuild.runAdbRun = GUI.Toggle(new Rect(5, adbRunPartHeight, 590, 20), CustomBuild.runAdbRun, "Run build when done?");
 
         float debugModeHeight = adbRunPartHeight + 20;
         CustomBuild.debugMode = GUI.Toggle(new Rect(5, debugModeHeight, 590, 20), CustomBuild.debugMode, "Run gradle in debug mode? This will not end gradle terminal automatically.");
@@ -574,7 +587,7 @@ public class ExportScenes
 {
     private SceneToExport[] scenes = null;
 
-    public string[] ScenesToString() 
+    public string[] ScenesToString()
     {
         ArrayList pathScenes = new ArrayList();
 
@@ -593,13 +606,13 @@ public class ExportScenes
     {
         this.getAllOpenScenes();
         this.SelectScenesToExport();
-    } 
+    }
 
     public void getAllOpenScenes()
     {
         var allScenes = EditorBuildSettings.scenes;
         int sceneCount = allScenes.Length;
-        //        int sceneCount = UnityEngine.SceneManagement.SceneManager.sceneCount;  
+        //        int sceneCount = UnityEngine.SceneManagement.SceneManager.sceneCount;
         scenes = new SceneToExport[sceneCount];
 
         for(int i = 0; i < sceneCount; i++)
@@ -607,7 +620,7 @@ public class ExportScenes
             //UnityEngine.SceneManagement.Scene scene = UnityEngine.SceneManagement.SceneManager.GetSceneAt(i);
             EditorBuildSettingsScene scene = allScenes[i];
 
-            if(scenes[i] == null) 
+            if(scenes[i] == null)
             {
                 scenes[i] = new SceneToExport();
             }
@@ -618,7 +631,7 @@ public class ExportScenes
     }
 
     // Opens ExportScenesWindow window.
-    public void SelectScenesToExport() 
+    public void SelectScenesToExport()
     {
         CustomBuildWindow.CreateExportScenesWindow(ref scenes);
     }
