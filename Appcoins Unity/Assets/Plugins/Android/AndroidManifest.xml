@@ -4,6 +4,7 @@
   package="com.aptoide.appcoinsunity"
   xmlns:tools="http://schemas.android.com/tools"
   android:installLocation="preferExternal">
+  <uses-permission android:name="com.android.vending.BILLING" tools:node="remove" />
   <supports-screens
       android:smallScreens="true"
       android:normalScreens="true"
