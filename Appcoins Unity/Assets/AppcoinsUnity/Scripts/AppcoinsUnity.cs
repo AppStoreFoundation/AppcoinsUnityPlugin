@@ -1,16 +1,14 @@
 ﻿//created by Lukmon Agboola(Codeberg)
 //Modified by Aptoide
 //Note: do not change anything here as it may break the workings of the plugin else you're very sure of what you're doing.
-
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
-
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-using UnityEngine.UI;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Aptoide.AppcoinsUnity
 {
@@ -52,6 +50,7 @@ namespace Aptoide.AppcoinsUnity
             if (enablePOA)
                 EditorUtility.DisplayDialog("AppCoins Unity Integration", "PoA is enabled and should have started now", "OK");
 #else
+
             //get refference to java class
             _class = new AndroidJavaClass("com.aptoide.appcoinsunity.UnityAppcoins");
 
@@ -67,7 +66,6 @@ namespace Aptoide.AppcoinsUnity
             //start sdk
             _class.CallStatic("start");
 #endif
-
         }
 
         // This function is called when this script is loaded or some variable changes its value.
@@ -317,4 +315,4 @@ namespace Aptoide.AppcoinsUnity
             return a;
         }
     }
-}
+} //namespace Aptoide.AppcoinsUnity

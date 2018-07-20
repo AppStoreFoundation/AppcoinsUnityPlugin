@@ -3,14 +3,14 @@
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 725463dde0e0c7141ae63a4a10c9e64c, type: 3}
-  m_Name: Chocolate
+  m_Script: {fileID: 1068742706, guid: 3cc414bc367244ea8986ed434ae02d14, type: 3}
+  m_Name: Dodo
   m_EditorClassIdentifier: 
-  Name: Chocolate
-  SKUID: chocolate
-  Price: 1
+  Name: Dodo
+  SKUID: dodo
+  Price: 0.25

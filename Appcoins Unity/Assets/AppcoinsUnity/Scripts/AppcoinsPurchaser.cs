@@ -40,4 +40,4 @@ namespace Aptoide.AppcoinsUnity{
 		}
 
 	}
-}
+} //namespace Aptoide.AppcoinsUnity
