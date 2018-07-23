@@ -929,7 +929,7 @@ MonoBehaviour:
   receivingAddress: 0xa43646ed0ece7595267ed7a2ff6f499f9f10f3c7
   enableIAB: 1
   enablePOA: 1
-  enableDebug: 0
+  enableDebug: 1
   products:
   - {fileID: 11400000, guid: dd967e148bced47769b79e9411d5246b, type: 2}
   - {fileID: 11400000, guid: d98015a9ca23f4ce29b4e04e403f037c, type: 2}
