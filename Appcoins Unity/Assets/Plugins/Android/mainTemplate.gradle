@@ -39,8 +39,8 @@ android {
     ndk {
       abiFilters 'armeabi-v7a', 'x86'
     }
-    versionCode 1
-    versionName '0.1'
+    versionCode **VERSIONCODE**
+    versionName '**VERSIONNAME**'
     multiDexEnabled true
     compileOptions {
       sourceCompatibility 1.8
