@@ -15,25 +15,23 @@ namespace Aptoide.AppcoinsUnity
 
     public class AppcoinsUnity : MonoBehaviour
     {
+        public static string POA = "POA";
+        public static string DEBUG = "DEBUG";
+        public static string APPCOINS_PREFAB = "APPCOINS_PREFAB";
+
         [Header("Your wallet address for receiving Appcoins")]
         public string receivingAddress;
         [Header("Uncheck to disable Appcoins IAB")]
         public bool enableIAB = true;
         [Header("Uncheck to disable Appcoins ADS(Proof of attention)")]
-        public bool enablePOA = false;
+        public bool enablePOA = true;
         [Header("Enable debug to use testnets e.g Ropsten")]
-        public bool enableDebug = false;
+        public bool enableDebug = true;
         [Header("Add all your products here")]
         public AppcoinsSku[] products;
         [Header("Add your purchaser object here")]
         public AppcoinsPurchaser purchaserObject;
         private string previousName = null;
-
-        private string POA = "POA";
-        private string DEBUG = "DEBUG";
-        private string APPCOINS_PREFAB = "APPCOINS_PREFAB";
-        private bool previousEnablePOA = false;
-        private bool previousDebug = false;
 
         AndroidJavaClass _class;
         AndroidJavaObject instance { get { return _class.GetStatic<AndroidJavaObject>("instance"); } }
@@ -72,25 +70,9 @@ namespace Aptoide.AppcoinsUnity
         void OnValidate()
         {
             // Put new value of enablePOA in mainTemplate.gradle to enable it or disable it.
-            if (previousEnablePOA != enablePOA)
-            {
-                previousEnablePOA = enablePOA;
-                updateVarOnMainTemplateGradle(POA, previousEnablePOA.ToString());
-            }
-
-            if (previousDebug != enableDebug)
-            {
-                previousDebug = enableDebug;
-                updateVarOnMainTemplateGradle(DEBUG, previousDebug.ToString());
-            }
-
-            if(previousName == null || !previousName.Equals(this.name))
-            {
-                changePrefabName();
-                previousName = string.Copy(this.name);
-            }
+            updateVarOnMainTemplateGradle(POA, enablePOA.ToString());
+            updateVarOnMainTemplateGradle(DEBUG, enableDebug.ToString());
         }
-
 
         //called to add all skus specified in the inpector window.
         private void addAllSKUs()
@@ -162,54 +144,6 @@ namespace Aptoide.AppcoinsUnity
             {
                 Debug.Log("purchaserObject is null");
             }
-        }
-
-        private void changePrefabName()
-        {
-            string line;
-            ArrayList fileLines = new ArrayList();
-
-            System.IO.StreamReader fileReader = new System.IO.StreamReader(Application.dataPath + "/Plugins/Android/mainTemplate.gradle");
-
-            while((line = fileReader.ReadLine()) != null)
-            {
-                if(line.Contains(APPCOINS_PREFAB))
-                {
-                    int i = 0;
-                    string newLine = "";
-
-                    while(line[i].Equals("\t") || line[i].Equals(" "))
-                    {
-                        i++;
-                        newLine = string.Concat("\t", "");
-                    }
-
-                    newLine = string.Concat(newLine, line);
-
-                    //Erase content after last comma
-                    int lastComma = newLine.LastIndexOf(",");
-                    newLine = newLine.Substring(0, lastComma + 1);
-                    newLine = string.Concat(newLine, " \"" + this.name + "\"");
-
-                    fileLines.Add(newLine);
-                }
-
-                else
-                {
-                    fileLines.Add(line);
-                }
-            }
-
-            fileReader.Close();
-
-            System.IO.StreamWriter fileWriter = new System.IO.StreamWriter(Application.dataPath + "/Plugins/Android/mainTemplate.gradle");
-
-            foreach(string newLine in fileLines)
-            {
-                fileWriter.WriteLine(newLine);
-            }
-
-            fileWriter.Close();
         }
 
         // Change the mainTemplate.gradle's ENABLE_POA var to its new value

@@ -17,6 +17,9 @@ public class CustomBuildMenuItem : EditorWindow
 
     //[MenuItem("AppCoins/Setup")]
     public static void Setup() {
+
+        ValidatePrefabName();
+
         //Check if the active platform is Android. If it isn't change it
         if (EditorUserBuildSettings.activeBuildTarget != BuildTarget.Android)
 #if UNITY_5_6_OR_NEWER
@@ -54,6 +57,65 @@ public class CustomBuildMenuItem : EditorWindow
         UnityEngine.Debug.Log("Successfully integrated Appcoins Unity plugin!");
 
     }
+
+    //Makes sure that the prefab name is updated on the mainTemplat.gradle before the build process
+    private static void ValidatePrefabName()
+    {
+        var foundObjects = FindObjectsOfType<AppcoinsUnity>();
+
+        if (foundObjects.Length == 0) {
+            UnityEngine.Debug.LogError("Found no object with component AppcoinsUnity! Are you using the prefab?");
+            return;
+        }
+
+        GameObject appCoinsPrefabObject = foundObjects[0].gameObject;
+
+        string line;
+        ArrayList fileLines = new ArrayList();
+
+        System.IO.StreamReader fileReader = new System.IO.StreamReader(Application.dataPath + "/Plugins/Android/mainTemplate.gradle");
+
+        while ((line = fileReader.ReadLine()) != null)
+        {
+            if (line.Contains(AppcoinsUnity.APPCOINS_PREFAB))
+            {
+                int i = 0;
+                string newLine = "";
+
+                while (line[i].Equals("\t") || line[i].Equals(" "))
+                {
+                    i++;
+                    newLine = string.Concat("\t", "");
+                }
+
+                newLine = string.Concat(newLine, line);
+
+                //Erase content after last comma
+                int lastComma = newLine.LastIndexOf(",");
+                newLine = newLine.Substring(0, lastComma + 1);
+                newLine = string.Concat(newLine, " \"" + appCoinsPrefabObject.name + "\"");
+
+                fileLines.Add(newLine);
+            }
+
+            else
+            {
+                fileLines.Add(line);
+            }
+        }
+
+        fileReader.Close();
+
+        System.IO.StreamWriter fileWriter = new System.IO.StreamWriter(Application.dataPath + "/Plugins/Android/mainTemplate.gradle");
+
+        foreach (string newLine in fileLines)
+        {
+            fileWriter.WriteLine(newLine);
+        }
+
+        fileWriter.Close();
+    }
+
 
     [MenuItem("AppCoins/Custom Android Build")]
     public static void CallAndroidCustomBuild()
