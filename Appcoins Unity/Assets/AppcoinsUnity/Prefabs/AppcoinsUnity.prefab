@@ -51,7 +51,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12da97ea06d9a294a86eed804e667040, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  receivingAddress: 
+  receivingAddress: 0xa43646ed0ece7595267ed7a2ff6f499f9f10f3c7
   enableIAB: 1
   enablePOA: 1
   enableDebug: 1
