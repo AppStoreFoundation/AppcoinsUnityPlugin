@@ -14,7 +14,12 @@ public class ExportPackageAutomatically : ScriptableObject
         List<string> filesToRemove = new List<string> {
             "ExportPackageAutomatically.cs",
             "ProcessCompleted.out",
-            "BashCommand.sh"
+            "BashCommand.sh",
+            "ProcessError.out",
+            "AttemptMergeTemplate.gradle",
+            "MergedTemplate.gradle",
+            "oldMainTemplate.gradle",
+            "Assets/Plugins/Android/mainTemplate.gradle"
         };
 
         // Complete path to folder to filter out (starting from Assets)
@@ -37,7 +42,7 @@ public class ExportPackageAutomatically : ScriptableObject
 
             foreach(string folder in foldersToRemove) {
                 if (itemName.Contains(folder)) {
-                    RemoveItemFormList(filesToExport, i);
+                    RemoveItemFromList(filesToExport, i);
                     break;
                 }
             }           
@@ -51,19 +56,26 @@ public class ExportPackageAutomatically : ScriptableObject
             //Delete files starting with .
             if(Path.GetFileName(filesToExport[i]).Substring(0, 1) == ".")
             {
-                RemoveItemFormList(filesToExport, i);
+                RemoveItemFromList(filesToExport, i);
             }
 
             //Delete metas
             else if(Path.GetExtension(filesToExport[i]) == ".meta")
             {
-                RemoveItemFormList(filesToExport, i);
+                RemoveItemFromList(filesToExport, i);
             }
 
             //Delete blacklisted files
-            else if(filesToRemove.Contains(Path.GetFileName(filesToExport[i])))
+            else 
             {
-                RemoveItemFormList(filesToExport,i);
+                foreach(string blackFile in filesToRemove)
+                {
+                    if(filesToExport[i].Contains(blackFile))
+                    {
+                        RemoveItemFromList(filesToExport,i);
+                        break;
+                    }
+                }
             }
         }
 
@@ -77,7 +89,7 @@ public class ExportPackageAutomatically : ScriptableObject
         UnityEngine.Debug.Log("Export done successfully");
     }
 
-    private static void RemoveItemFormList(List<string> list, int itemIndex) {
+    private static void RemoveItemFromList(List<string> list, int itemIndex) {
         //UnityEngine.Debug.Log("Deleting " + list[itemIndex]);
         list.RemoveAt(itemIndex);
     }

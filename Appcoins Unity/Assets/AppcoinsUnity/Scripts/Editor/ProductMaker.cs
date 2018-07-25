@@ -17,7 +17,7 @@ public class ProductMaker
             AssetDatabase.CreateFolder("Assets/AppcoinsUnity", "Products");    
         }
 
-        AssetDatabase.CreateAsset(asset, "Assets/AppcoinsUnity/Products/" + DEFAULT_APPCOINS_PRODUCT_NAME + "_Appcoins.asset");
+        AssetDatabase.CreateAsset(asset, "Assets/Products/" + DEFAULT_APPCOINS_PRODUCT_NAME + "_Appcoins.asset");
         AssetDatabase.SaveAssets();
 
         EditorUtility.FocusProjectWindow();
