@@ -20,14 +20,13 @@ public class PurchaseActivity extends Activity {
     private static String TAG = "PurchaseActivity";
 
     protected void onCreate(Bundle savedInstanceState) {
-        Application.purchaseActivity = this;
         super.onCreate(savedInstanceState);
         // print debug message to logcat
         Log.d(TAG, "Activity began.");
 
         String skuid = getIntent().getStringExtra(SKUID_TAG);
 
-        Log.d(TAG,"the activity is " + Application.purchaseActivity);
+        Log.d(TAG,"the activity is " + this);
         appCoinsSdk.buy(skuid, this).subscribe(() -> {
             // In this case the buy process was triggered as expected.
         }, throwable -> {

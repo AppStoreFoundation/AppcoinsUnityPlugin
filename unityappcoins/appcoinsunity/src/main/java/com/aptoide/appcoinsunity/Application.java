@@ -27,7 +27,6 @@ public class Application extends android.app.Application {
     static boolean POAFlag=false;
     static boolean IABFlag=false;
     static android.app.Application application;
-    static Activity purchaseActivity;
 
     @Override
     public void onCreate() {
