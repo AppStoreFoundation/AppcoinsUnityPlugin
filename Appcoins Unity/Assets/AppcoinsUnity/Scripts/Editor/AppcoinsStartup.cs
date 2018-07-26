@@ -4,7 +4,7 @@ using System;
 using System.IO;
 
 [InitializeOnLoad]
-public class Startup
+public class Startup : ScriptableObject
 {
     private static string appcoinsMainTemplate = UnityEngine.Application.dataPath + "/AppcoinsUnity/Plugins/Android/mainTemplate.gradle";
     private static string currentMainTemplate = UnityEngine.Application.dataPath + "/Plugins/Android/mainTemplate.gradle";
@@ -52,18 +52,42 @@ public class Startup
     {
         if(File.Exists(currentMainTemplate))
         {
-            File.Copy(currentMainTemplate, oldMainTemplate, true);
+            if(!Startup.AppcoinsMainTemplateAlreadyMerged())
+            {
+                File.Copy(currentMainTemplate, oldMainTemplate, true);
 
-            Tree<string> tCurrent = Tree<string>.CreateTreeFromFile(currentMainTemplate, FileParser.BUILD_GRADLE);
-            Tree<string> tAppcoins = Tree<string>.CreateTreeFromFile(appcoinsMainTemplate, FileParser.BUILD_GRADLE);
+                Tree<string> tCurrent = Tree<string>.CreateTreeFromFile(currentMainTemplate, FileParser.BUILD_GRADLE);
+                Tree<string> tAppcoins = Tree<string>.CreateTreeFromFile(appcoinsMainTemplate, FileParser.BUILD_GRADLE);
 
-            tCurrent.MergeTrees(tAppcoins);
-            Tree<string>.CreateFileFromTree(tCurrent, UnityEngine.Application.dataPath + "/Plugins/Android/mainTemplate.gradle" , false, FileParser.BUILD_GRADLE);
+                tCurrent.MergeTrees(tAppcoins);
+                Tree<string>.CreateFileFromTree(tCurrent, UnityEngine.Application.dataPath + "/Plugins/Android/mainTemplate.gradle" , false, FileParser.BUILD_GRADLE);
+            }
         }
 
         else
         {
             File.Copy(appcoinsMainTemplate, currentMainTemplate, true);
         }
+    }
+
+    private static bool AppcoinsMainTemplateAlreadyMerged()
+    {
+        StreamReader fileReader = new StreamReader(currentMainTemplate);
+
+        string appcoinsComment = "// Appcoins mainTemplate merged";
+        string line;
+        bool commentExists = false;
+
+        while((line = fileReader.ReadLine()) != null)
+        {
+            if(line.Equals(appcoinsComment))
+            {
+                commentExists = true;
+                break;
+            }
+        }
+
+        fileReader.Close();
+        return commentExists;
     }
 }

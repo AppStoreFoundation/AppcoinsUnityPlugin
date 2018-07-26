@@ -1,3 +1,4 @@
+// Appcoins mainTemplate merged
 buildscript {
   repositories {
     jcenter()

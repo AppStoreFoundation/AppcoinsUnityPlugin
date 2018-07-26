@@ -148,6 +148,11 @@ public class Node<T>
         _childs.Add(child);
     }
 
+    public void InsertChild(int index, Node<T> child)
+    {
+        _childs.Insert(index, child);
+    }
+
     // Remove a node's child at a specific index
     public void RemoveChildAt(int index)
     {
@@ -212,6 +217,10 @@ public class Tree<T>
         "compilefileTree(dir:'libs',include:['*.jar'])",
         "apifileTree(dir:'libs',include:['*.jar'])"
     };
+
+    private static int insertAppcoinsCommentIndex = 1;
+
+    private static string appcoinsComment = "// Appcoins mainTemplate merged";
 
     // Height of the tree
     private int _height;
@@ -358,7 +367,7 @@ public class Tree<T>
     }
 
     // Create file from tree (each node item is one line) to a specific path.
-    public static void CreateFileFromTree(Tree<T> t, string pathFile, bool append, FileParser fileParser)
+    public static void CreateFileFromTree(Tree<string> t, string pathFile, bool append, FileParser fileParser)
     {
         StreamWriter fileWriter = new StreamWriter(pathFile, append);
 
@@ -371,21 +380,25 @@ public class Tree<T>
     }
 
     // Create a build gardle file from tree.
-    private static void CreateGradleFileFromTree(Tree<T> t, StreamWriter fileWriter)
+    private static void CreateGradleFileFromTree(Tree<string> t, StreamWriter fileWriter)
     {
+        Node<string> commentNode = t.GetRoot().FindChild(node => node.ToString().Equals(Tree<string>.appcoinsComment));
+        t.GetRoot().RemoveChild(commentNode);
+        t.GetRoot().InsertChild(Tree<string>.insertAppcoinsCommentIndex, new Node<string>(Tree<string>.appcoinsComment, t.GetRoot()));
+
         t.TraverseDFS(
             t.GetRoot(),
-            delegate(Node<T> node)
+            delegate(Node<string> node)
             {
-                if(!Tree<T>.StringBlackList(node.ToString().Replace(" ", "")) && !node.ToString().Equals("root"))
+                if(!Tree<string>.StringBlackList(node.ToString().Replace(" ", "")) && !node.ToString().Equals("root"))
                 {
-                    string s = Node<T>.ParseItem(node, node.GetDepth() - 1);
+                    string s = Node<string>.ParseItem(node, node.GetDepth() - 1);
                     fileWriter.WriteLine(s);
                 }
             },
-            delegate(Node<T> node) {},
-            delegate(Node<T> node) {},
-            delegate(Node<T> node)
+            delegate(Node<string> node) {},
+            delegate(Node<string> node) {},
+            delegate(Node<string> node)
             {
                 if(node.GetChildsCount() > 0 && !node.ToString().Equals("root"))
                 {
