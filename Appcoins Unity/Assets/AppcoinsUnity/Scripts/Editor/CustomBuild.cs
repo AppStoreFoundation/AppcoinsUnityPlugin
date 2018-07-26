@@ -486,7 +486,23 @@ public class CustomBuild
         this.FixAppPath(ref CustomBuild.adbPath, "adb");
 
         string adbCmd = "'" + CustomBuild.adbPath + "adb'";
-        string adbArgs = "-d install -r './build/outputs/apk/release/" + PlayerSettings.productName + "-release.apk'";
+
+        string adbArgs = "";
+        if(CustomBuild.buildDebug)
+        {
+            adbArgs = "-d install -r './build/outputs/apk/debug/" + PlayerSettings.productName + "-debug.apk'";
+        }
+
+        else if(CustomBuild.buildRelease)
+        {
+            adbArgs = "-d install -r './build/outputs/apk/release/" + PlayerSettings.productName + "-release.apk'";
+        }
+
+        else 
+        {
+            UnityEngine.Debug.LogError("Please enable one of: 'build debug' or 'build realease'");
+        }
+
         string cmdPath = "'" + path + "/" + PlayerSettings.productName + "'";
 
         Terminal terminal = null;
