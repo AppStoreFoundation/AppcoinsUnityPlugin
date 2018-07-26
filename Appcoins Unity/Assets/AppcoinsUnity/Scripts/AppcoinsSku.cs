@@ -12,4 +12,4 @@ namespace Aptoide.AppcoinsUnity{
         public string SKUID;
         public double Price;
     }
-}
+} //namespace Aptoide.AppcoinsUnity

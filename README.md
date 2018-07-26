@@ -82,7 +82,6 @@ public class Purchaser : AppcoinsPurchaser {
 
 ## To build the project
 
-
 Go to the build menu (File -> Build Settings)
 1. Check that the build system is set to "Gradle"
 (if the import was done correctly this should've changed automatically).
@@ -108,7 +107,7 @@ You should have your game running on the phone!
 
 1. Close the _Player Settings_ window
 
-2. On the top bar click _Custom Build_
+2. On the top bar click _AppCoins_
 
 3. Click _Custom Android Build_
 

@@ -343,6 +343,8 @@ __pycache__/
 *.odx.cs
 *.xsd.cs
 
+.vscode
+.vscode/
 ### VisualStudio Patch ###
 # By default, sensitive information, such as encrypted password
 # should be stored in the .pubxml.user file.
@@ -350,3 +352,4 @@ __pycache__/
 
 # End of https://www.gitignore.io/api/unity,visualstudio,visualstudiocode
 
+unityappcoins/.idea/caches/build_file_checksums.ser

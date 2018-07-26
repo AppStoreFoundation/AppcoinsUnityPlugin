@@ -8,13 +8,120 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
+using Aptoide.AppcoinsUnity;
+
 
 public class CustomBuildMenuItem : EditorWindow
 {
+    public const string DEFAULT_UNITY_PACKAGE_IDENTIFIER = "com.Company.ProductName";
 
-    [MenuItem("Custom Build/Custom Android Build")]
+    //[MenuItem("AppCoins/Setup")]
+    public static void Setup() {
+
+        ValidatePrefabName();
+
+        //Check if the active platform is Android. If it isn't change it
+        if (EditorUserBuildSettings.activeBuildTarget != BuildTarget.Android)
+#if UNITY_5_6_OR_NEWER
+            EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.Android, BuildTarget.Android);
+
+#else
+                EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTarget.Android);
+
+#endif
+
+        //Check if min sdk version is lower than 21. If it is, set it to 21
+        if (PlayerSettings.Android.minSdkVersion < AndroidSdkVersions.AndroidApiLevel21)
+            PlayerSettings.Android.minSdkVersion = AndroidSdkVersions.AndroidApiLevel21;
+
+        //Check if the bunde id is the default one and change it if it to avoid that error
+#if UNITY_5_6_OR_NEWER
+        if (PlayerSettings.applicationIdentifier.Equals(DEFAULT_UNITY_PACKAGE_IDENTIFIER))
+            PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, "com.aptoide.appcoins");
+
+#else
+            if (PlayerSettings.bundleIdentifier.Equals(DEFAULT_UNITY_PACKAGE_IDENTIFIER))
+                PlayerSettings.bundleIdentifier = "com.aptoide.appcoins";
+
+#endif
+
+        //Make sure that gradle is the selected build system
+        if (EditorUserBuildSettings.androidBuildSystem != AndroidBuildSystem.Gradle)
+            EditorUserBuildSettings.androidBuildSystem = AndroidBuildSystem.Gradle;
+
+
+        //Make sure all non relevant errors go away
+        UnityEngine.Debug.ClearDeveloperConsole();
+
+
+        UnityEngine.Debug.Log("Successfully integrated Appcoins Unity plugin!");
+
+    }
+
+    //Makes sure that the prefab name is updated on the mainTemplat.gradle before the build process
+    private static void ValidatePrefabName()
+    {
+        var foundObjects = FindObjectsOfType<AppcoinsUnity>();
+
+        if (foundObjects.Length == 0) {
+            UnityEngine.Debug.LogError("Found no object with component AppcoinsUnity! Are you using the prefab?");
+            return;
+        }
+
+        GameObject appCoinsPrefabObject = foundObjects[0].gameObject;
+
+        string line;
+        ArrayList fileLines = new ArrayList();
+
+        System.IO.StreamReader fileReader = new System.IO.StreamReader(Application.dataPath + "/Plugins/Android/mainTemplate.gradle");
+
+        while ((line = fileReader.ReadLine()) != null)
+        {
+            if (line.Contains(AppcoinsUnity.APPCOINS_PREFAB))
+            {
+                int i = 0;
+                string newLine = "";
+
+                while (line[i].Equals("\t") || line[i].Equals(" "))
+                {
+                    i++;
+                    newLine = string.Concat("\t", "");
+                }
+
+                newLine = string.Concat(newLine, line);
+
+                //Erase content after last comma
+                int lastComma = newLine.LastIndexOf(",");
+                newLine = newLine.Substring(0, lastComma + 1);
+                newLine = string.Concat(newLine, " \"" + appCoinsPrefabObject.name + "\"");
+
+                fileLines.Add(newLine);
+            }
+
+            else
+            {
+                fileLines.Add(line);
+            }
+        }
+
+        fileReader.Close();
+
+        System.IO.StreamWriter fileWriter = new System.IO.StreamWriter(Application.dataPath + "/Plugins/Android/mainTemplate.gradle");
+
+        foreach (string newLine in fileLines)
+        {
+            fileWriter.WriteLine(newLine);
+        }
+
+        fileWriter.Close();
+    }
+
+
+    [MenuItem("AppCoins/Custom Android Build")]
     public static void CallAndroidCustomBuild()
     {
+        Setup(); //Make sure settings are correctly applied
+
         CustomBuild buildObj = new CustomBuild();
         buildObj.ExecuteCustomBuild("android");
     }
@@ -40,6 +147,8 @@ public class CustomBuild
     public static string adbPath = EditorPrefs.GetString("AndroidSdkRoot") + "/platform-tools/adb";
     public static bool runAdbInstall = false;
     public static bool runAdbRun = false;
+    public static bool buildDebug = true;
+    public static bool buildRelease = false;
     public static bool debugMode = false;
     // public static string mainActivityPath = "com.unity3d.player.UnityPlayerActivity";
     public static string mainActivityPath = ".UnityPlayerActivity";
@@ -320,6 +429,12 @@ public class CustomBuild
 
         string gradleCmd = "'" + gradlePath + "gradle'";
         string gradleArgs = "build";
+
+        if (CustomBuild.buildDebug && !CustomBuild.buildRelease)
+            gradleArgs = "assembleDebug";
+        if (!CustomBuild.buildDebug && CustomBuild.buildRelease)
+            gradleArgs = "assembleRelease";
+
         string cmdPath = "'" + path + "/" + PlayerSettings.productName + "'";
 
         if(CustomBuild.debugMode)
@@ -475,6 +590,11 @@ public class CustomBuildWindow : EditorWindow
         GUI.Label(new Rect(5, gradlePartHeight, 590, 40), "Select the gradle path");
         gradlePartHeight += 20;
         CustomBuild.gradlePath = GUI.TextField(new Rect(5, gradlePartHeight, 590, 20), CustomBuild.gradlePath);
+        gradlePartHeight += 20;
+        CustomBuild.buildDebug = GUI.Toggle(new Rect(5, gradlePartHeight, 590, 20), CustomBuild.buildDebug, "Build Debug?");
+        gradlePartHeight += 20;
+        CustomBuild.buildRelease = GUI.Toggle(new Rect(5, gradlePartHeight, 590, 20), CustomBuild.buildRelease, "Build Release?");
+
 
         float adbPartHeight = gradlePartHeight + 20;
         GUI.Label(new Rect(5, adbPartHeight, 590, 40), "Select the adb path");
@@ -489,14 +609,15 @@ public class CustomBuildWindow : EditorWindow
         adbRunPartHeight += 20;
         CustomBuild.mainActivityPath = GUI.TextField(new Rect(5, adbRunPartHeight, 590, 20), CustomBuild.mainActivityPath);
         adbRunPartHeight += 20;
-        CustomBuild.runAdbRun = GUI.Toggle(new Rect(5, adbRunPartHeight, 590, 20), CustomBuild.runAdbRun, "Run build when done?"); 
+        CustomBuild.runAdbRun = GUI.Toggle(new Rect(5, adbRunPartHeight, 590, 20), CustomBuild.runAdbRun, "Run build when done?");
 
         float debugModeHeight = adbRunPartHeight + 20;
         CustomBuild.debugMode = GUI.Toggle(new Rect(5, debugModeHeight, 590, 20), CustomBuild.debugMode, "Run gradle in debug mode? This will not end gradle terminal automatically.");
 
         float scenesPartHeight = debugModeHeight + 20;
         GUI.Label(new Rect(5, scenesPartHeight, 590, 40), "Select what scenes you want to export:\n(Only scenes that are in build settings are true by default)");
-        float scrollViewLength = scenes.Length * 25f;
+        int scenesLength = scenes != null ? scenes.Length : 0;
+        float scrollViewLength = scenesLength * 25f;
         scenesPartHeight += 30;
         scrollViewVector = GUI.BeginScrollView(new Rect(5, scenesPartHeight, 590, 215), scrollViewVector, new Rect(0, 0, 500, scrollViewLength));
         for (int i = 0; i < scenes.Length; i++)
@@ -528,7 +649,7 @@ public class ExportScenes
 {
     private SceneToExport[] scenes = null;
 
-    public string[] ScenesToString() 
+    public string[] ScenesToString()
     {
         ArrayList pathScenes = new ArrayList();
 
@@ -547,13 +668,13 @@ public class ExportScenes
     {
         this.getAllOpenScenes();
         this.SelectScenesToExport();
-    } 
+    }
 
     public void getAllOpenScenes()
     {
         var allScenes = EditorBuildSettings.scenes;
         int sceneCount = allScenes.Length;
-        //        int sceneCount = UnityEngine.SceneManagement.SceneManager.sceneCount;  
+        //        int sceneCount = UnityEngine.SceneManagement.SceneManager.sceneCount;
         scenes = new SceneToExport[sceneCount];
 
         for(int i = 0; i < sceneCount; i++)
@@ -561,7 +682,7 @@ public class ExportScenes
             //UnityEngine.SceneManagement.Scene scene = UnityEngine.SceneManagement.SceneManager.GetSceneAt(i);
             EditorBuildSettingsScene scene = allScenes[i];
 
-            if(scenes[i] == null) 
+            if(scenes[i] == null)
             {
                 scenes[i] = new SceneToExport();
             }
@@ -572,7 +693,7 @@ public class ExportScenes
     }
 
     // Opens ExportScenesWindow window.
-    public void SelectScenesToExport() 
+    public void SelectScenesToExport()
     {
         CustomBuildWindow.CreateExportScenesWindow(ref scenes);
     }

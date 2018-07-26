@@ -20,7 +20,7 @@ allprojects    {
 		google()
 		jcenter()
 		maven    {
-			url "https://dl.bintray.com/asf/asf"
+			url "https://dl.bintray.com/asf/asf" 
 			}
 
 		}
@@ -31,7 +31,6 @@ apply plugin: 'com.android.application'
 dependencies    {
 	**DEPS**
 	implementation fileTree(dir: 'libs', excludes: ['com.android.support.support-annotations*.jar'], include: ['*.jar'])
-	api 'com.asfoundation:appcoins:0.3.8a'
 	api 'com.asfoundation:appcoins:0.3.6a'
 	}
 
@@ -93,6 +92,12 @@ android    {
 
 	**PACKAGING_OPTIONS****SPLITS**
 	**BUILT_APK_LOCATION**
+	multiDexEnabled true
+	compileOptions    {
+		sourceCompatibility 1.8
+		targetCompatibility 1.8
+		}
+
 	}
 
 **SPLITS_VERSION_CODE****SOURCE_BUILD_SETUP**

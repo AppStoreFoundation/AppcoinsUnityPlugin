@@ -47,7 +47,8 @@ public class PurchaseActivity extends Activity {
         if (Application.appCoinsSdk.onActivityResult(requestCode, requestCode, data)) {
             Application.appCoinsSdk.getCurrentPayment()
                     .subscribe(paymentDetails -> UnityPlayer.currentActivity.runOnUiThread(() -> {
-                        if (paymentDetails.getPaymentStatus() == PaymentStatus.SUCCESS) {
+                        if ((paymentDetails.getPaymentStatus() == PaymentStatus.PENDING) ||
+                                (paymentDetails.getPaymentStatus() == PaymentStatus.SUCCESS)) {
                             String skuId = paymentDetails.getSkuId();
                             // Now we tell the sdk to consume the skuId.
                             Application.appCoinsSdk.consume(skuId);

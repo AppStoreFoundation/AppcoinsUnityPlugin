@@ -1,9 +1,15 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using System;
+using System.IO;
 
 [InitializeOnLoad]
 public class Startup
 {
+    private static string appcoinsMainTemplate = UnityEngine.Application.dataPath + "/AppcoinsUnity/Plugins/Android/mainTemplate.gradle";
+    private static string currentMainTemplate = UnityEngine.Application.dataPath + "/Plugins/Android/mainTemplate.gradle";
+    private static string oldMainTemplate =  UnityEngine.Application.dataPath + "/Plugins/Android/oldMainTemplate.gradle";
+
     public const string DEFAULT_UNITY_PACKAGE_IDENTIFIER = "com.Company.ProductName";
 
     static Startup()
@@ -38,6 +44,26 @@ public class Startup
             EditorUserBuildSettings.androidBuildSystem = AndroidBuildSystem.Gradle;      
 
 
+        CheckMainTemplateGradle();
         Debug.Log("Successfully integrated Appcoins Unity plugin!");
+    }
+
+    private static void CheckMainTemplateGradle()
+    {
+        if(File.Exists(currentMainTemplate))
+        {
+            File.Copy(currentMainTemplate, oldMainTemplate, true);
+
+            Tree<string> tCurrent = Tree<string>.CreateTreeFromFile(currentMainTemplate, FileParser.BUILD_GRADLE);
+            Tree<string> tAppcoins = Tree<string>.CreateTreeFromFile(appcoinsMainTemplate, FileParser.BUILD_GRADLE);
+
+            tCurrent.MergeTrees(tAppcoins);
+            Tree<string>.CreateFileFromTree(tCurrent, UnityEngine.Application.dataPath + "/Plugins/Android/mainTemplate.gradle" , false, FileParser.BUILD_GRADLE);
+        }
+
+        else
+        {
+            File.Copy(appcoinsMainTemplate, currentMainTemplate, true);
+        }
     }
 }

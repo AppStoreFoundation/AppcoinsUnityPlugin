@@ -1,43 +1,36 @@
 ﻿//created by Lukmon Agboola(Codeberg)
 //Modified by Aptoide
 //Note: do not change anything here as it may break the workings of the plugin else you're very sure of what you're doing.
-
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
-
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-using UnityEngine.UI;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Aptoide.AppcoinsUnity
 {
 
     public class AppcoinsUnity : MonoBehaviour
     {
+        public static string POA = "POA";
+        public static string DEBUG = "DEBUG";
+        public static string APPCOINS_PREFAB = "APPCOINS_PREFAB";
+
         [Header("Your wallet address for receiving Appcoins")]
         public string receivingAddress;
         [Header("Uncheck to disable Appcoins IAB")]
         public bool enableIAB = true;
         [Header("Uncheck to disable Appcoins ADS(Proof of attention)")]
-        public bool enablePOA = false;
+        public bool enablePOA = true;
         [Header("Enable debug to use testnets e.g Ropsten")]
-        public bool enableDebug = false;
+        public bool enableDebug = true;
         [Header("Add all your products here")]
         public AppcoinsSku[] products;
         [Header("Add your purchaser object here")]
         public AppcoinsPurchaser purchaserObject;
-
-        private string NAME = "NAME";
-        private string previousName = null;
-
-        private string POA = "POA";
-        private string DEBUG = "DEBUG";
-        private string APPCOINS_PREFAB = "APPCOINS_PREFAB";
-        private bool previousEnablePOA = false;
-        private bool previousDebug = false;
 
         AndroidJavaClass _class;
         AndroidJavaObject instance { get { return _class.GetStatic<AndroidJavaObject>("instance"); } }
@@ -50,6 +43,11 @@ namespace Aptoide.AppcoinsUnity
         // Use this for initialization
         void Start()
         {
+#if UNITY_EDITOR
+            if (enablePOA)
+                EditorUtility.DisplayDialog("AppCoins Unity Integration", "PoA is enabled and should have started now", "OK");
+#else
+
             //get refference to java class
             _class = new AndroidJavaClass("com.aptoide.appcoinsunity.UnityAppcoins");
 
@@ -64,40 +62,39 @@ namespace Aptoide.AppcoinsUnity
 
             //start sdk
             _class.CallStatic("start");
-
+#endif
         }
 
         // This function is called when this script is loaded or some variable changes its value.
         void OnValidate()
         {
             // Put new value of enablePOA in mainTemplate.gradle to enable it or disable it.
-            if (previousEnablePOA != enablePOA)
-            {
-                previousEnablePOA = enablePOA;
-                updateVarOnMainTemplateGradle(POA, previousEnablePOA.ToString());
-            }
-
-            if (previousDebug != enableDebug)
-            {
-                previousDebug = enableDebug;
-                updateVarOnMainTemplateGradle(DEBUG, previousDebug.ToString());
-            }
-
-            if(previousName == null || !previousName.Equals(this.name))
-            {
-                changePrefabName();
-                previousName = string.Copy(this.name);
-            }
+            updateVarOnMainTemplateGradle(POA, enablePOA.ToString());
+            updateVarOnMainTemplateGradle(DEBUG, enableDebug.ToString());
         }
-
 
         //called to add all skus specified in the inpector window.
         private void addAllSKUs()
         {
+#if UNITY_EDITOR
+            bool failed = false;
+#endif
             for (int i = 0; i < products.Length; i++)
             {
-                _class.CallStatic("addNewSku", products[i].Name, products[i].SKUID, products[i].Price);
+                AppcoinsSku product = products[i];
+                if (product != null)
+                    _class.CallStatic("addNewSku", product.Name, product.SKUID, product.Price);
+#if UNITY_EDITOR
+                else
+                    failed = true;
+#endif
             }
+
+#if UNITY_EDITOR
+                if (failed)
+                    EditorUtility.DisplayDialog("AppCoins Unity Integration", "Warning: You have null products on AppCoinsUnity objects products list", "OK");
+#endif
+
         }
 
         //method used in making purchase
@@ -150,54 +147,6 @@ namespace Aptoide.AppcoinsUnity
             {
                 Debug.Log("purchaserObject is null");
             }
-        }
-
-        private void changePrefabName()
-        {
-            string line;
-            ArrayList fileLines = new ArrayList();
-
-            System.IO.StreamReader fileReader = new System.IO.StreamReader(Application.dataPath + "/Plugins/Android/mainTemplate.gradle");
-
-            while((line = fileReader.ReadLine()) != null)
-            {
-                if(line.Contains(APPCOINS_PREFAB))
-                {
-                    int i = 0;
-                    string newLine = "";
-
-                    while(line[i].Equals("\t") || line[i].Equals(" "))
-                    {
-                        i++;
-                        newLine = string.Concat("\t", "");
-                    }
-
-                    newLine = string.Concat(newLine, line);
-
-                    //Erase content after last comma
-                    int lastComma = newLine.LastIndexOf(",");
-                    newLine = newLine.Substring(0, lastComma + 1);
-                    newLine = string.Concat(newLine, " \"" + this.name + "\"");
-
-                    fileLines.Add(newLine);
-                }
-
-                else
-                {
-                    fileLines.Add(line);
-                }
-            }
-
-            fileReader.Close();
-
-            System.IO.StreamWriter fileWriter = new System.IO.StreamWriter(Application.dataPath + "/Plugins/Android/mainTemplate.gradle");
-
-            foreach(string newLine in fileLines)
-            {
-                fileWriter.WriteLine(newLine);
-            }
-
-            fileWriter.Close();
         }
 
         // Change the mainTemplate.gradle's ENABLE_POA var to its new value
@@ -303,4 +252,4 @@ namespace Aptoide.AppcoinsUnity
             return a;
         }
     }
-}
+} //namespace Aptoide.AppcoinsUnity
