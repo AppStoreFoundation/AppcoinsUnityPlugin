@@ -17,7 +17,6 @@ public class CustomBuildMenuItem : EditorWindow
 
     //[MenuItem("AppCoins/Setup")]
     public static void Setup() {
-
         ValidatePrefabName();
 
         //Check if the active platform is Android. If it isn't change it

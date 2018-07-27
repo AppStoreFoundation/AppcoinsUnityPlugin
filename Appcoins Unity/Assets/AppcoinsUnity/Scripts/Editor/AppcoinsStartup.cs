@@ -4,7 +4,7 @@ using System;
 using System.IO;
 
 [InitializeOnLoad]
-public class Startup : ScriptableObject
+public class Startup
 {
     private static string appcoinsMainTemplate = UnityEngine.Application.dataPath + "/AppcoinsUnity/Plugins/Android/mainTemplate.gradle";
     private static string currentMainTemplate = UnityEngine.Application.dataPath + "/Plugins/Android/mainTemplate.gradle";
