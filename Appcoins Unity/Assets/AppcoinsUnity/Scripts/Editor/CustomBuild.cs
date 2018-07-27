@@ -431,7 +431,7 @@ public class CustomBuild
 
         if (CustomBuild.buildDebug && !CustomBuild.buildRelease)
             gradleArgs = "assembleDebug";
-        if (!CustomBuild.buildDebug && CustomBuild.buildRelease)
+        if (CustomBuild.buildRelease)
             gradleArgs = "assembleRelease";
 
         string cmdPath = "'" + path + "/" + PlayerSettings.productName + "'";
