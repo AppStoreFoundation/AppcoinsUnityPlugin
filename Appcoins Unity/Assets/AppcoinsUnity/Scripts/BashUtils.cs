@@ -116,25 +116,33 @@ namespace Aptoide.AppcoinsUnity
         //This creates a bash file that gets executed in the specified path
         protected void CreateSHFileToExecuteCommand(int buildPhase, string cmd, string cmdArgs, string path, bool debugMode, bool GUI)
         {
-            // Delete all temporary files.
-            if (File.Exists(Application.dataPath + "/AppcoinsUnity/Tools/ProcessCompleted.out"))
+            if(!Directory.Exists(Application.dataPath + "/AppcoinsUnity/Tools"))
             {
-                File.Delete(Application.dataPath + "/AppcoinsUnity/Tools/ProcessCompleted.out");
+                Directory.CreateDirectory(Application.dataPath + "/AppcoinsUnity/Tools");
             }
-
-            if (File.Exists(Application.dataPath + "/AppcoinsUnity/Tools/ProcessError.out"))
+            
+            else
             {
-                File.Delete(Application.dataPath + "/AppcoinsUnity/Tools/stderr.out");
-            }
+                // Delete all temporary files.
+                if (File.Exists(Application.dataPath + "/AppcoinsUnity/Tools/ProcessCompleted.out"))
+                {
+                    File.Delete(Application.dataPath + "/AppcoinsUnity/Tools/ProcessCompleted.out");
+                }
 
-            if (File.Exists(Application.dataPath + "/AppcoinsUnity/Tools/BashCommand.bat"))
-            {
-                File.Delete(Application.dataPath + "/AppcoinsUnity/Tools/BashCommand.bat");
-            }
+                if (File.Exists(Application.dataPath + "/AppcoinsUnity/Tools/ProcessError.out"))
+                {
+                    File.Delete(Application.dataPath + "/AppcoinsUnity/Tools/stderr.out");
+                }
 
-            if (File.Exists(Application.dataPath + "/AppcoinsUnity/Tools/BashCommand.sh"))
-            {
-                File.Delete(Application.dataPath + "/AppcoinsUnity/Tools/BashCommand.sh");
+                if (File.Exists(Application.dataPath + "/AppcoinsUnity/Tools/BashCommand.bat"))
+                {
+                    File.Delete(Application.dataPath + "/AppcoinsUnity/Tools/BashCommand.bat");
+                }
+
+                if (File.Exists(Application.dataPath + "/AppcoinsUnity/Tools/BashCommand.sh"))
+                {
+                    File.Delete(Application.dataPath + "/AppcoinsUnity/Tools/BashCommand.sh");
+                }
             }
 
             StreamWriter writer = new StreamWriter(Application.dataPath + "/AppcoinsUnity/Tools/BashCommand.sh", false);
