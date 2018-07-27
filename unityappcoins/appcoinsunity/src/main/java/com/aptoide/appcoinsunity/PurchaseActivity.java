@@ -6,7 +6,10 @@ import com.unity3d.player.UnityPlayerActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.MainThread;
 import android.util.Log;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
 
 import static com.aptoide.appcoinsunity.Application.appCoinsSdk;
 
@@ -27,10 +30,12 @@ public class PurchaseActivity extends Activity {
         String skuid = getIntent().getStringExtra(SKUID_TAG);
 
         Log.d(TAG,"the activity is " + this);
-        appCoinsSdk.buy(skuid, this).subscribe(() -> {
+        appCoinsSdk.buy(skuid, this).observeOn(AndroidSchedulers.mainThread()).subscribe(() -> {
             // In this case the buy process was triggered as expected.
+            Log.d(TAG, "*********************************success**************************");
         }, throwable -> {
             // There was an error triggering the buy process.
+            Log.d(TAG, "******************************fail****************************+");
             throwable.printStackTrace();
         });
     }
