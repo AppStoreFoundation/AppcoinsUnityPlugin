@@ -429,8 +429,8 @@ public class CustomBuild
         string gradleCmd = "'" + gradlePath + "gradle'";
         string gradleArgs = "build";
 
-        if (CustomBuild.buildDebug && !CustomBuild.buildRelease)
-            gradleArgs = "assembleDebug";
+        gradleArgs = "assembleDebug";
+        
         if (CustomBuild.buildRelease)
             gradleArgs = "assembleRelease";
 
