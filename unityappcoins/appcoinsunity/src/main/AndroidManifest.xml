@@ -1,6 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.aptoide.appcoinsunity">
+    <uses-permission android:name="com.android.vending.BILLING" tools:node="remove"/>
 <application android:allowBackup="true"
     android:supportsRtl="true"
     android:name=".Application"
