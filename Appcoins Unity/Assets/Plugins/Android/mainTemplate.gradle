@@ -32,7 +32,7 @@ apply plugin: 'com.android.application'
 dependencies    {
 	**DEPS**
 	implementation fileTree(dir: 'libs', excludes: ['com.android.support.support-annotations*.jar'], include: ['*.jar'])
-	api 'com.asfoundation:appcoins:0.3.8a'
+	api 'com.asfoundation:appcoins:0.3.6a'
 	}
 
 android    {
