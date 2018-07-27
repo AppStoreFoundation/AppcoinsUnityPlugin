@@ -580,19 +580,19 @@ Prefab:
         type: 2}
       propertyPath: products.Array.data[0]
       value: 
-      objectReference: {fileID: 11400000, guid: 61c56077242eb40dcac1ef77a4fc92a5,
+      objectReference: {fileID: 11400000, guid: 780c5410643654fcab423add8ed927e1,
         type: 2}
     - target: {fileID: 114785420944783200, guid: 53ffe963ba9e4624aac3b31b1619f682,
         type: 2}
       propertyPath: products.Array.data[1]
       value: 
-      objectReference: {fileID: 11400000, guid: 253139025378442e59e57923634ff8fc,
+      objectReference: {fileID: 11400000, guid: ef93861140d6640a5ac3e21a27f2e16d,
         type: 2}
     - target: {fileID: 114785420944783200, guid: 53ffe963ba9e4624aac3b31b1619f682,
         type: 2}
       propertyPath: products.Array.data[2]
       value: 
-      objectReference: {fileID: 11400000, guid: b8759aa3af5904833aaefa6b83ad0381,
+      objectReference: {fileID: 11400000, guid: 0ed022fd0610f4f7585b0f94df8fe76b,
         type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 53ffe963ba9e4624aac3b31b1619f682, type: 2}
