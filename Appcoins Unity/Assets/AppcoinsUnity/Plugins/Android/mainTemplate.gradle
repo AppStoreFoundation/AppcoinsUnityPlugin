@@ -55,7 +55,9 @@ android {
 
   aaptOptions {
         noCompress '.unity3d', '.ress', '.resource', '.obb'**STREAMING_ASSETS**
-    }**SIGN**
+    }
+
+    **SIGN**
 
   buildTypes {
     debug {

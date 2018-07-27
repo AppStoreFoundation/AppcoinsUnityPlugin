@@ -310,10 +310,8 @@ public class Tree<T>
             // Create new child node (leaf)
             else if(allFile[i].Equals('\n'))
             {
-                string aux = newString.Replace(" ", "");
                 if(newString.Length > 0)
                 {
-                    
                     currentNode.AddChild(new Node<string>(newString, currentNode));
                 }
 
