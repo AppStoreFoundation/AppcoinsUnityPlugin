@@ -15,9 +15,19 @@ public class CustomBuildMenuItem : EditorWindow
 {
     public const string DEFAULT_UNITY_PACKAGE_IDENTIFIER = "com.Company.ProductName";
 
+    private static Aptoide.AppcoinsUnity.AppcoinsUnity appCoinsPrefabObject = null;
+
     //[MenuItem("AppCoins/Setup")]
-    public static void Setup() {
+    public static bool Setup() {
         ValidatePrefabName();
+
+        if (appCoinsPrefabObject != null)
+        {
+            if (appCoinsPrefabObject.CheckForRepeatedSkuId())
+            {
+                return false;
+            }
+        }
 
         //Check if the active platform is Android. If it isn't change it
         if (EditorUserBuildSettings.activeBuildTarget != BuildTarget.Android)
@@ -54,7 +64,7 @@ public class CustomBuildMenuItem : EditorWindow
 
 
         UnityEngine.Debug.Log("Successfully integrated Appcoins Unity plugin!");
-
+        return true;
     }
 
     //Makes sure that the prefab name is updated on the mainTemplat.gradle before the build process
@@ -67,7 +77,7 @@ public class CustomBuildMenuItem : EditorWindow
             return;
         }
 
-        GameObject appCoinsPrefabObject = foundObjects[0].gameObject;
+        appCoinsPrefabObject = foundObjects[0];
 
         string line;
         ArrayList fileLines = new ArrayList();
@@ -92,7 +102,7 @@ public class CustomBuildMenuItem : EditorWindow
                 //Erase content after last comma
                 int lastComma = newLine.LastIndexOf(",");
                 newLine = newLine.Substring(0, lastComma + 1);
-                newLine = string.Concat(newLine, " \"" + appCoinsPrefabObject.name + "\"");
+                newLine = string.Concat(newLine, " \"" + appCoinsPrefabObject.gameObject.name + "\"");
 
                 fileLines.Add(newLine);
             }
@@ -115,14 +125,23 @@ public class CustomBuildMenuItem : EditorWindow
         fileWriter.Close();
     }
 
+    
 
     [MenuItem("AppCoins/Custom Android Build")]
     public static void CallAndroidCustomBuild()
     {
-        Setup(); //Make sure settings are correctly applied
+        //Make sure settings are correctly applied
 
-        CustomBuild buildObj = new CustomBuild();
-        buildObj.ExecuteCustomBuild("android");
+        if (Setup())
+        {
+            CustomBuild buildObj = new CustomBuild();
+            buildObj.ExecuteCustomBuild("android");
+        }
+
+        else
+        {
+            UnityEngine.Debug.LogError("Custom Build aborted.");
+        }     
     }
 }
 

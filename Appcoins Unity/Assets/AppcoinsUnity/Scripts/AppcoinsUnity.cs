@@ -45,7 +45,13 @@ namespace Aptoide.AppcoinsUnity
         {
 #if UNITY_EDITOR
             if (enablePOA)
-                EditorUtility.DisplayDialog("AppCoins Unity Integration", "PoA is enabled and should have started now", "OK");
+                EditorUtility.DisplayDialog(
+                    "AppCoins Unity Integration", 
+                    "PoA is enabled and should have started now", 
+                    "OK"
+                );
+
+            checkSKUsInEditorMode();
 #else
 
             //get refference to java class
@@ -76,27 +82,76 @@ namespace Aptoide.AppcoinsUnity
         //called to add all skus specified in the inpector window.
         private void addAllSKUs()
         {
-#if UNITY_EDITOR
-            bool failed = false;
-#endif
             for (int i = 0; i < products.Length; i++)
             {
                 AppcoinsSku product = products[i];
                 if (product != null)
                     _class.CallStatic("addNewSku", product.Name, product.SKUID, product.Price);
-#if UNITY_EDITOR
-                else
-                    failed = true;
-#endif
             }
-
-#if UNITY_EDITOR
-                if (failed)
-                    EditorUtility.DisplayDialog("AppCoins Unity Integration", "Warning: You have null products on AppCoinsUnity objects products list", "OK");
-#endif
-
         }
 
+    public bool CheckForRepeatedSkuId( )
+    {
+        for (int i = 0; i < products.Length - 1; i++)
+        {
+            AppcoinsSku currentProduct = products[i];
+
+            for (int j = i + 1; j < products.Length; j++)
+            {
+                AppcoinsSku compareProduct = products[j];
+
+                if (currentProduct.SKUID.Length == compareProduct.SKUID.Length)
+                {
+                    if (currentProduct.SKUID.Equals(compareProduct.SKUID))
+                    {
+                        #if UNITY_EDITOR
+                        EditorUtility.DisplayDialog(
+                            "AppCoins Custom Build Error", 
+                            "AppcoinsUnity Prefab products list: element number " + i +
+                                    " and element number " + j + " have the same SKU ID", 
+                            "OK"
+                        );
+                        #endif
+
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+#if UNITY_EDITOR
+        private void checkSKUsInEditorMode()
+        {
+            if (products.Length == 0)
+            {
+                EditorUtility.DisplayDialog(
+                    "AppCoins Unity Integration", 
+                    "Warning: You have no products on AppCoinsUnity prefab products list", 
+                    "OK"
+                );
+            }
+
+            else
+            {
+                for (int i = 0; i < products.Length; i++)
+                {
+                    if(products[i] == null)
+                    {
+                        EditorUtility.DisplayDialog(
+                            "AppCoins Unity Integration", 
+                            "Warning: You have null products on AppCoinsUnity prefab products list", 
+                            "OK"
+                        );
+                    }
+                }
+            }
+
+            CheckForRepeatedSkuId();
+        }
+#endif
         //method used in making purchase
         public void makePurchase(string skuid)
         {
