@@ -2,50 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using UnityEditor;
-
-// public class TestTree
-// {
-//     private static string appcoinsMainTemplate = UnityEngine.Application.dataPath + "/AppcoinsUnity/Plugins/Android/mainTemplate.gradle";
-//     private static string currentMainTemplate = UnityEngine.Application.dataPath + "/Plugins/Android/mainTemplate.gradle";
-
-//     [MenuItem("TestTree/Print Tree")]
-//     public static void PrintTree()
-//     {
-//         Tree<string> tCurrent = Tree<string>.CreateTreeFromFile(currentMainTemplate, FileParser.BUILD_GRADLE);
-//         Tree<string> tAppcoins = Tree<string>.CreateTreeFromFile(appcoinsMainTemplate, FileParser.BUILD_GRADLE);
-
-//         tCurrent.TraverseDFS(tCurrent.GetRoot(), delegate(Node<string> node)
-//         {
-//             // UnityEngine.Debug.Log(node.ToString() + " / " + node.ToString().Length);
-//         }, 
-//         delegate(Node<string> node){}, delegate(Node<string> node){}, delegate(Node<string> node){});
-
-//         // UnityEngine.Debug.Log("");
-//         // UnityEngine.Debug.Log("\nOtherFile\n");
-//         // UnityEngine.Debug.Log("");
-
-//         tAppcoins.TraverseDFS(tAppcoins.GetRoot(), delegate(Node<string> node)
-//         {
-//             // UnityEngine.Debug.Log(node.ToString() + " / " + node.ToString().Length);
-//         }, 
-//         delegate(Node<string> node){}, delegate(Node<string> node){}, delegate(Node<string> node){});
-
-//         // UnityEngine.Debug.Log("");
-//         // UnityEngine.Debug.Log("\nMergedTree\n");
-//         // UnityEngine.Debug.Log("");
-
-//         tCurrent.MergeTrees(tAppcoins);
-
-//         tCurrent.TraverseDFS(tCurrent.GetRoot(), delegate(Node<string> node)
-//         {
-//             // UnityEngine.Debug.Log(node.ToString() + " / " + node.ToString().Length);
-//         }, 
-//         delegate(Node<string> node){}, delegate(Node<string> node){}, delegate(Node<string> node){});
-
-//         Tree<string>.CreateFileFromTree(tCurrent, UnityEngine.Application.dataPath + "/Plugins/Android/AttemptMergeTemplate.gradle" , false, FileParser.BUILD_GRADLE);
-//     }
-// }
 
 // Node of a Tree or Graph
 public class Node<T>

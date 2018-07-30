@@ -19,6 +19,9 @@ public class CustomBuildMenuItem : EditorWindow
 
     //[MenuItem("AppCoins/Setup")]
     public static bool Setup() {
+
+        UnityEngine.Debug.Log("Application.unityVersion " + Application.unityVersion);
+
         ValidatePrefabName();
 
         if (appCoinsPrefabObject != null)
@@ -31,37 +34,22 @@ public class CustomBuildMenuItem : EditorWindow
 
         //Check if the active platform is Android. If it isn't change it
         if (EditorUserBuildSettings.activeBuildTarget != BuildTarget.Android)
-#if UNITY_5_6_OR_NEWER
             EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.Android, BuildTarget.Android);
-
-#else
-                EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTarget.Android);
-
-#endif
 
         //Check if min sdk version is lower than 21. If it is, set it to 21
         if (PlayerSettings.Android.minSdkVersion < AndroidSdkVersions.AndroidApiLevel21)
             PlayerSettings.Android.minSdkVersion = AndroidSdkVersions.AndroidApiLevel21;
 
         //Check if the bunde id is the default one and change it if it to avoid that error
-#if UNITY_5_6_OR_NEWER
         if (PlayerSettings.applicationIdentifier.Equals(DEFAULT_UNITY_PACKAGE_IDENTIFIER))
             PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, "com.aptoide.appcoins");
-
-#else
-            if (PlayerSettings.bundleIdentifier.Equals(DEFAULT_UNITY_PACKAGE_IDENTIFIER))
-                PlayerSettings.bundleIdentifier = "com.aptoide.appcoins";
-
-#endif
 
         //Make sure that gradle is the selected build system
         if (EditorUserBuildSettings.androidBuildSystem != AndroidBuildSystem.Gradle)
             EditorUserBuildSettings.androidBuildSystem = AndroidBuildSystem.Gradle;
-
-
+        
         //Make sure all non relevant errors go away
         UnityEngine.Debug.ClearDeveloperConsole();
-
 
         UnityEngine.Debug.Log("Successfully integrated Appcoins Unity plugin!");
         return true;
@@ -390,13 +378,7 @@ public class CustomBuild
 
         this.DeleteIfFolderAlreadyExists(path);
 
-        #if UNITY_5_6_OR_NEWER
-            EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.Android, BuildTarget.Android);
-
-        #else
-            EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTarget.Android);
-
-        #endif
+        EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.Android, BuildTarget.Android);
 
         BuildPipeline.BuildPlayer(scenesPath, path, build_target, build_options);
         return path;
@@ -542,11 +524,9 @@ public class CustomBuild
         this.FixAppPath(ref CustomBuild.adbPath, "adb");
 
         string adbCmd = "'" + CustomBuild.adbPath + "adb'";
-#if UNITY_5_6_OR_NEWER
+
         string adbArgs = "shell am start -n '" + PlayerSettings.applicationIdentifier + "/" + CustomBuild.mainActivityPath + "'";
-#else
-        string adbArgs = "shell am start -n '" + PlayerSettings.bundleIdentifier + "/" + CustomBuild.mainActivityPath + "'";
-#endif
+
         string cmdPath = "'" + path + "/" + PlayerSettings.productName + "'";
 
         Terminal terminal = null;
