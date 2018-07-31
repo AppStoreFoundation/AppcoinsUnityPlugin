@@ -13,6 +13,7 @@ using Aptoide.AppcoinsUnity;
 
 public class CustomBuildMenuItem : EditorWindow
 {
+    public static UnityEvent onSetupCalled;
     public const string DEFAULT_UNITY_PACKAGE_IDENTIFIER = "com.Company.ProductName";
 
     private static Aptoide.AppcoinsUnity.AppcoinsUnity appCoinsPrefabObject = null;
@@ -24,13 +25,16 @@ public class CustomBuildMenuItem : EditorWindow
 
         ValidatePrefabName();
 
-        if (appCoinsPrefabObject != null)
-        {
-            if (appCoinsPrefabObject.CheckForRepeatedSkuId())
-            {
-                return false;
-            }
-        }
+        //TODO figure out a way of doing this!
+        //if (appCoinsPrefabObject != null)
+        //{
+        //    if (Application.isEditor) {
+        //        if (appCoinsPrefabObject.CheckForRepeatedSkuId())
+        //        {
+        //            return false;
+        //        }
+        //    }
+        //}
 
         //Check if the active platform is Android. If it isn't change it
         if (EditorUserBuildSettings.activeBuildTarget != BuildTarget.Android)
