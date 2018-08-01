@@ -11,6 +11,6 @@ MonoBehaviour:
   m_Script: {fileID: 1068742706, guid: 976953026c0d7418b9ed722778075ceb, type: 3}
   m_Name: Monster Drink
   m_EditorClassIdentifier: 
-  Name: 
-  SKUID: 
-  Price: 0
+  Name: Monster Drink
+  SKUID: monster
+  Price: 0.25
