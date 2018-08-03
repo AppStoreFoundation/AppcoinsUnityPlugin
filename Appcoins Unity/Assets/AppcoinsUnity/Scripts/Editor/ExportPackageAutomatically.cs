@@ -5,8 +5,10 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 
+
 public class ExportPackageAutomatically : ScriptableObject
 {
+
     [MenuItem("Export Package/Unity")]
     public static void ExportFromUnity()
     {
@@ -82,7 +84,7 @@ public class ExportPackageAutomatically : ScriptableObject
 
         string packagePath = Application.dataPath +
                                         "/../../" + 
-                                        "AppCoins_Unity_Package.unitypackage";
+                                        PackageInfo.GetPackageName() + ".unitypackage";
         
         ExportPackageOptions options = ExportPackageOptions.Recurse;
         AssetDatabase.ExportPackage(filesToExport.ToArray(), packagePath, options);
