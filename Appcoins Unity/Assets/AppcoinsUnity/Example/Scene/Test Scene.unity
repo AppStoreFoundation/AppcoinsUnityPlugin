@@ -537,6 +537,7 @@ GameObject:
   m_Component:
   - component: {fileID: 788359240}
   - component: {fileID: 788359239}
+  - component: {fileID: 788359241}
   m_Layer: 0
   m_Name: AppcoinsUnity
   m_TagString: Untagged
@@ -579,6 +580,17 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &788359241
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 788359238}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 171d9cf4ae88f40e7a3c60ec7f6ecfff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &861539365
 GameObject:
   m_ObjectHideFlags: 0

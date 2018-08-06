@@ -50,7 +50,6 @@ namespace Aptoide.AppcoinsUnity
 #if UNITY_EDITOR
             EditorUtility.DisplayDialog("AppCoins Unity Integration", "Purchase Success!", "OK");
 #endif
-
         }
 
         //callback on failed purchases
