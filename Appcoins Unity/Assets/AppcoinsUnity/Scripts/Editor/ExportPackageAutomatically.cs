@@ -5,8 +5,10 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 
+
 public class ExportPackageAutomatically : ScriptableObject
 {
+
     [MenuItem("Export Package/Unity")]
     public static void ExportFromUnity()
     {
@@ -24,7 +26,8 @@ public class ExportPackageAutomatically : ScriptableObject
 
         // Complete path to folder to filter out (starting from Assets)
         List<string> foldersToRemove = new List<string> {
-            "Assets/Products"
+            "Assets/Products",
+            "Assets/Scripts/Editor/Tests"
         };
 
         int pathToRemove = (Path.GetDirectoryName(Application.dataPath) + "/").Length;
@@ -81,7 +84,7 @@ public class ExportPackageAutomatically : ScriptableObject
 
         string packagePath = Application.dataPath +
                                         "/../../" + 
-                                        "AppCoins_Unity_Package.unitypackage";
+                                        PackageInfo.GetPackageName() + ".unitypackage";
         
         ExportPackageOptions options = ExportPackageOptions.Recurse;
         AssetDatabase.ExportPackage(filesToExport.ToArray(), packagePath, options);
