@@ -354,3 +354,4 @@ __pycache__/
 
 unityappcoins/.idea/caches/build_file_checksums.ser
 Appcoins Unity/Assets/Plugins/Android/mainTemplate.gradle
+defaultExport.sh
