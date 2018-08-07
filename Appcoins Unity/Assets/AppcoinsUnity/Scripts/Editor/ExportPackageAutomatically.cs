@@ -27,7 +27,7 @@ public class ExportPackageAutomatically : ScriptableObject
         // Complete path to folder to filter out (starting from Assets)
         List<string> foldersToRemove = new List<string> {
             "Assets/Products",
-            "Assets/Scripts/Editor/Tests"
+            "Assets/AppcoinsUnity/Scripts/Editor/Tests"
         };
 
         int pathToRemove = (Path.GetDirectoryName(Application.dataPath) + "/").Length;
