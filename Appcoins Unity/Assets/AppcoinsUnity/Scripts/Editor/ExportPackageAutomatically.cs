@@ -15,6 +15,7 @@ public class ExportPackageAutomatically : ScriptableObject
         // Just the file name with extension
         List<string> filesToRemove = new List<string> {
             "ExportPackageAutomatically.cs",
+            "PackageInfo.cs",
             "ProcessCompleted.out",
             "BashCommand.sh",
             "ProcessError.out",
