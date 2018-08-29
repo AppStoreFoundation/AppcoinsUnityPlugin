@@ -92,8 +92,8 @@ public class ProductStabilityTest {
     public void TestAddNewProductToList()
     {
         EditorApplication.ExecuteMenuItem("Assets/Create/AppCoins Product");
-        string productPath = "Assets/AppcoinsUnity/Products/AppCoinsProduct_Appcoins.asset";
-        AppcoinsSku product = GetProductAtPath(productPath);
+        // string productPath = "Assets/AppcoinsUnity/Products/AppCoinsProduct_Appcoins.asset";
+        // AppcoinsSku product = GetProductAtPath(productPath);
 
         //product.
 
