@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4594033286640844}
   - component: {fileID: 114684919080743874}
   m_Layer: 0
-  m_Name: AppcoinsUnity
+  m_Name: ASFAppcoinsUnity
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
