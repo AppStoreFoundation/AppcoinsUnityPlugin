@@ -10,7 +10,8 @@ public class Purchaser : AppcoinsPurchaser {
 	public Text message;
 
 
-	void Start(){
+	void Start()
+	{
 		message.text = "Welcome to cody snacks shop!";
 	}
 
