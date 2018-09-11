@@ -10,33 +10,34 @@ This plugin is developed from a fork of the unofficial unity plugin for AppCoins
 
 ## Integrating the plugin into your game
 
-1. Download the plugin package [AppCoins_Unity_Package.unitypackage](https://github.com/AppStoreFoundation/AppcoinsUnityPlugin/blob/develop/AppCoins_Unity_Package.unitypackage) file and open the package in your Unity project (double click the file or in Unity go to Assets -> Import Package -> Custom Package.... and find the file you just downloaded). If you don't want to import the example, make sure to untick the example folder. Everything else is mandatory.
+1. Download the [plugin package file](https://github.com/AppStoreFoundation/AppcoinsUnityPlugin/blob/develop/AppCoins_Unity_Package.unitypackage) regarding your current Unity version. Open the package in your Unity project (double click the file or in Unity go to Assets -> Import Package -> Custom Package.... and find the file you just downloaded). If you don't want to import the 'AppcoinsUnity/Example' and the 'Resources' folders, make sure to untick them. Everything else is mandatory.
 
-![picture](Screenshots/shot2.png)
+![picture](Screenshots/shot8.png)
 
-2. From the Assets -> AppcoinsUnity -> Prefabs folder drag and drop the _AppcoinsUnity_ prefab into your scene or hierarchy window. If you want you can change the name of AppcoinsUnity gameobject. **NOTE: If the only change you are doing in your project before building is changing the name of AppcoinsUnity gameobject, you have to ckick "apply" in the inspector window in order to valid this change.**
+2. From the Assets -> AppcoinsUnity -> Prefabs folder drag and drop the _ASFAppcoinsUnity_ prefab into your scene or hierarchy window. If you want you can change the name of AppcoinsUnity gameobject. **NOTE: **
 
-![picture](Screenshots/shot3.png)
+![picture](Screenshots/shot9.png)
 
-3. In the inspector window where you have _Receiving Address_, change the text to your AppCoins wallet address where you would like to receive your AppCoins.
+3. In the inspector window where you have _Receiving Address_, change the text to your ASF wallet address where you would like to receive your AppCoins.
 
 4. Check the _enable debug_ checkbox if you would like to be able to use testnets like Ropsten for testing your AppCoins In-App Billing integration.
 **Note: Uncheck this in production to avoid testnet purchases.**
 
 5. You need to create in-app products.
-To create an _AppcoinsProduct_ click Assets -> Create -> Appcoins Product, fill in the product info and click Apply. Everytime you make a change to the product you should click Apply. This will create the product in a folder called "Products" inside the Assets folder. Create as many as your in-app products.
+To create an _AppcoinsProduct_ click Assets -> Create -> Appcoins Product, fill in the product info and click Apply. Everytime you make a change to the product you should click Apply. This will create the product in a folder called "Products" inside the 'Assets/AppcoinsUnity' folder. Create as many as your in-app products.
 
 ![picture](Screenshots/CreateAppcoinsProduct.png)
 
-6. Drag and drop all the products you created to the field on the _AppcoinsUnity_ gameobject where you have products.
+6. Drag and drop all the products you created to the field on the _ASFAppcoinsUnity_ gameobject where you have products.
 
 **Note: in the image below 3 products were created and added (Chocolate, Dodo and Monster Drink).**
 
-![picture](Screenshots/shot5.png)
+![picture](Screenshots/shot10.png)
 
 **Note: Checking "Add to list" while creating the product will add the product to the products list automatically for you**
 
-7. Create purchaser class in Unity C# by inheriting from the AppcoinsPurchaser Class:
+7. Create _Purchaser_ class in Unity C# by inheriting from the _AppcoinsPurchaser_ class.
+When the _Purchaser_ class wants to buy a product it has to call _makePurchase_ method, with the SKU id of the product to buy, implemented by _AppcoinsPurchaser_ class. After the purchase has been processed one of the two methods (_purchaseSuccess_, _purchaseFailed_) will be called by _AppcoinsPurchaser_. Those two methods are virtual and empty so you can override them and implemented a custom version:
 
 ```
 
@@ -48,15 +49,16 @@ public class Purchaser : AppcoinsPurchaser {
 	//method gets called on successful purchases
 	public override void purchaseSuccess (string skuid)
 	{
-		base.purchaseSuccess (skuid);
-		//purchase is successful release the product
+      //purchase is successful release the product
+      DisplayMessage("Purchase has been processed");
+      ReleaseItem(skuid);
 	}
 
 	//method gets called on failed purchases
 	public override void purchaseFailure (string skuid)
 	{
-		base.purchaseFailure (skuid);
-		//purchase failed perhaps show some error message
+      //purchase failed perhaps show some error message
+      DisplayMessage("Purchase failed");
 
 	}
 
@@ -78,7 +80,7 @@ public class Purchaser : AppcoinsPurchaser {
 
 8. Create an object in your scene and add the purchaser script you created to it. Drag and drop the purchaser object to the slot where you have the _Purchaser Object_ on the _AppcoinsUnity_ prefab you added to your scene earlier.
 
-![picture](Screenshots/shot6.png)
+![picture](Screenshots/shot11.png)
 
 ## To build the project
 
@@ -103,7 +105,7 @@ On the _Player Settings_ window:
 
 You should have your game running on the phone!
 
-**Unity 2018.1.X and below (till Unity 5.X)**
+**Unity 5.6 (and above)**
 
 1. Close the _Player Settings_ window
 
@@ -113,11 +115,11 @@ You should have your game running on the phone!
 
 4. This popup will show up
 
-![picture](Screenshots/CustomBuildSettings.png)
+![picture](Screenshots/shot12.png)
 
 5. The gradle path should be picked from the path to your Android Studio installation
 
-6. The adb path will be picked by you (assuming you have Android SDK installed)
+6. The adb path will be picked automatically (assuming you have Android SDK path specified in Unity)
 
 7. Pick the scenes you want to include. The ones added to the build settings will automatically be selected for you
 
@@ -127,11 +129,13 @@ You should have your game running on the phone!
   FolderYouChoseToBuildTo/ProjectName/build/outputs/apk/
   in a subfolder called debug or release, depending on build settings)
 
-9. When you pick the folder the build process will start. The normal build process will happen and then the custom build process will kick in opening a terminal window. Unity might seem to be not responding but worry not! This is normal because it's waiting for the terminal processes to finish.
+9. When you pick the folder the build process will start. The normal build process will happen and then the custom build process will kick in opening a terminal window. Unity might seem to be not responding but not worry! This is normal because it's waiting for the terminal processes to finish.
 
 10. If you ticked _Install build when done?_ make sure you have your phone connected to the computer and that you unlock it to allow ADB to run
 
-![picture](Screenshots/BuildDone.png)
+  a. If you also ticked _Run build when done?_ after the installation the game will be launched automatically.
+
+![picture](Screenshots/shot13.png)
 
 11. The build process completed. You can run the app on your phone!
 

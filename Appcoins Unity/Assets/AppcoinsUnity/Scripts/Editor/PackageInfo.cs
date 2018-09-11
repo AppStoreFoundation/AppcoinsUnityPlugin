@@ -6,6 +6,6 @@ public class PackageInfo : MonoBehaviour {
 
     public static string GetPackageName()
     {
-        return "BDS_AppCoins_Unity_Package";
+        return "ASF_AppCoins_Unity_Package_2018";
     }
 }
