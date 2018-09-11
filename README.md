@@ -201,7 +201,7 @@ To test your purchases, just follow the normal flow you do to trigger them. When
 
 Trying to make the purchase through the Editor should display a popup like this:
 
-![picture](Screenshots/editorPopup.png)
+![picture](Screenshots/shot14.png)
 
 Pressing "Test success" will go through with the flow as if the purchase was successful (_purchaseSuccess_ on _Purchaser_ will be called).
 
