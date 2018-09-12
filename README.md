@@ -16,71 +16,105 @@ This plugin is developed from a fork of the unofficial unity plugin for AppCoins
 
 2. From the Assets -> AppcoinsUnity -> Prefabs folder drag and drop the _ASFAppcoinsUnity_ prefab into your scene or hierarchy window. If you want you can change the name of AppcoinsUnity gameobject. **NOTE: **
 
-![picture](Screenshots/shot9.png)
+![picture](Screenshots/shot15.png)
 
 3. In the inspector window where you have _Receiving Address_, change the text to your ASF wallet address where you would like to receive your AppCoins.
 
 4. Check the _enable debug_ checkbox if you would like to be able to use testnets like Ropsten for testing your AppCoins In-App Billing integration.
 **Note: Uncheck this in production to avoid testnet purchases.**
 
-5. You need to create in-app products.
-To create an _AppcoinsProduct_ click Assets -> Create -> Appcoins Product, fill in the product info and click Apply. Everytime you make a change to the product you should click Apply. This will create the product in a folder called "Products" inside the 'Assets/AppcoinsUnity' folder. Create as many as your in-app products.
-
-![picture](Screenshots/CreateAppcoinsProduct.png)
-
-6. Drag and drop all the products you created to the field on the _ASFAppcoinsUnity_ gameobject where you have products.
-
-**Note: in the image below 3 products were created and added (Chocolate, Dodo and Monster Drink).**
-
-![picture](Screenshots/shot10.png)
-
-**Note: Checking "Add to list" while creating the product will add the product to the products list automatically for you**
-
-7. Create _Purchaser_ class in Unity C# by inheriting from the _AppcoinsPurchaser_ class.
-When the _Purchaser_ class wants to buy a product it has to call _makePurchase_ method, with the SKU id of the product to buy, implemented by _AppcoinsPurchaser_ class. After the purchase has been processed one of the two methods (_purchaseSuccess_, _purchaseFailed_) will be called by _AppcoinsPurchaser_. Those two methods are virtual and empty so you can override them and implemented a custom version:
+5. Create _Purchaser_ class in Unity C# by inheriting from the _AppcoinsPurchaser_ class.
+_RegisterSKUs_ method has to be override by your _Purchaser_ class to register all the SKUs you want. This method will be called by _AppcoinsUnity_ in the Start method (to register a _SKU_ you can call the method _AddSKU_, that receives a _AppcoinsSKU_ object, already implemented at _AppcoinsPurchaser_).
+When the _Purchaser_ class wants to buy a product it has to call _makePurchase_ method, with the SKU id of the product to buy, implemented by _AppcoinsPurchaser_. After the purchase has been processed one of the two methods (_purchaseSuccess_, _purchaseFailed_) will be called by _AppcoinsPurchaser_. Those two methods are virtual and empty so you can override them and implement a custom version:
 
 ```
+using UnityEngine;
+using UnityEngine.UI;
 
 //add this namespace to your script to give you  access to the plugin classes.
 using Aptoide.AppcoinsUnity;
 
+//Inherit from the AppcoinsPurchaser Class
 public class Purchaser : AppcoinsPurchaser {
 
-	//method gets called on successful purchases
-	public override void purchaseSuccess (string skuid)
+	public Text message;
+
+	void Start()
 	{
-      //purchase is successful release the product
-      DisplayMessage("Purchase has been processed");
-      ReleaseItem(skuid);
+		message.text = "Welcome to cody snacks shop!";
 	}
 
-	//method gets called on failed purchases
-	public override void purchaseFailure (string skuid)
+	public override void PurchaseSuccess (string skuid)
 	{
-      //purchase failed perhaps show some error message
-      DisplayMessage("Purchase failed");
+		base.PurchaseSuccess (skuid);
+		//purchase is successful release the product
 
+		if(skuid.Equals("dodo"))
+		{
+		message.text="Thanks! You bought dodo";
+		}
+
+		else if(skuid.Equals("monster"))
+		{
+		message.text="Thanks! You bought monster drink";
+		}
+
+		else if(skuid.Equals("chocolate"))
+		{
+			message.text="Thanks! You bought chocolate";
+		}
 	}
 
-	//example methods to initiate a purchase flow
-	//the string parameter of the makePurchase method is the skuid you specified in the inspector for each product
+	public override void PurchaseFailure (string skuid)
+	{
+		base.PurchaseFailure (skuid);
+		//purchase failed perhaps show some error message
+
+		if(skuid.Equals("dodo"))
+		{
+			message.text="Sorry! Purchase failed for dodo";
+		}
+
+		else if(skuid.Equals("monster"))
+		{
+			message.text="Sorry! Purchase failed for drink";
+		}
+
+		else if(skuid.Equals("chocolate"))
+		{
+			message.text="Sorry! Purchase failed for chocolate";
+		}
+	}
+
+	public override void RegisterSKUs()
+	{
+    //                      Name,       sku id,    price
+		AddSKU(new AppcoinsSKU("Chocolate", "chocolate", 0.1));
+		AddSKU(new AppcoinsSKU("Monster Drink", "monster", 0.1));
+		AddSKU(new AppcoinsSKU("Dodo", "dodo", 0.1));
+	}
+
+
+	//methods starts the purchase flow when you click their respective buttons to purchase snacks
 	public void buyDodo(){
-		makePurchase ("dodo");
+    // MakePurchase receives the sku id of the product to buy
+		MakePurchase("dodo");
 	}
 
 	public void buyMonster(){
-		makePurchase ("monster");
+		MakePurchase("monster");
 	}
 
 	public void buyChocolate(){
-		makePurchase ("chocolate");
+		MakePurchase("chocolate");
 	}
 }
+
 ```
 
-8. Create an object in your scene and add the purchaser script you created to it. Drag and drop the purchaser object to the slot where you have the _Purchaser Object_ on the _AppcoinsUnity_ prefab you added to your scene earlier.
+6. Create an object in your scene and add the purchaser script you created to it. Drag and drop the purchaser object to the slot where you have the _Purchaser Object_ on the _AppcoinsUnity_ prefab you added to your scene earlier.
 
-![picture](Screenshots/shot11.png)
+![picture](Screenshots/shot16.png)
 
 ## To build the project
 
