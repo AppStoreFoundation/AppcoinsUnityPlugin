@@ -2,11 +2,11 @@
 
 ![picture](Screenshots/logos.png)
 
-This is the official Unity plugin for the AppCoins Protocol that allows you to integrate AppCoins In-App Billing or Proof-of-Attention Ads into your Unity Android game.
+This is the official Unity plugin for the ASF AppCoins Protocol that allows you to integrate ASF AppCoins In-App Billing or Proof-of-Attention Ads into your Unity Android game.
 
 ## About AppCoins Unity Plugin
 This plugin is developed from a fork of the unofficial unity plugin for AppCoins by [codeberg-io](https://github.com/codeberg-io/AppcoinsUnityPlugin).
- We thought it was a great initiative and decided to support the project and help all Unity developers who would be integrating the AppCoins In-App Billing into their game.
+ We thought it was a great initiative and decided to support the project and help all Unity developers who would be integrating the ASF AppCoins In-App Billing into their game.
 
 ## Integrating the plugin into your game
 
@@ -14,7 +14,7 @@ This plugin is developed from a fork of the unofficial unity plugin for AppCoins
 
 ![picture](Screenshots/shot8.png)
 
-2. From the Assets -> AppcoinsUnity -> Prefabs folder drag and drop the _ASFAppcoinsUnity_ prefab into your scene or hierarchy window. If you want you can change the name of AppcoinsUnity gameobject. **NOTE: **
+2. From the Assets -> AppcoinsUnity -> Prefabs folder drag and drop the _ASFAppcoinsUnity_ prefab into your scene or hierarchy window. If you want you can change the name of _ASFAppcoinsUnity_ gameobject.
 
 ![picture](Screenshots/shot15.png)
 
@@ -23,9 +23,7 @@ This plugin is developed from a fork of the unofficial unity plugin for AppCoins
 4. Check the _enable debug_ checkbox if you would like to be able to use testnets like Ropsten for testing your AppCoins In-App Billing integration.
 **Note: Uncheck this in production to avoid testnet purchases.**
 
-5. Create _Purchaser_ class in Unity C# by inheriting from the _AppcoinsPurchaser_ class.
-_RegisterSKUs_ method has to be override by your _Purchaser_ class to register all the SKUs you want. This method will be called by _AppcoinsUnity_ in the Start method (to register a _SKU_ you can call the method _AddSKU_, that receives a _AppcoinsSKU_ object, already implemented at _AppcoinsPurchaser_).
-When the _Purchaser_ class wants to buy a product it has to call _makePurchase_ method, with the SKU id of the product to buy, implemented by _AppcoinsPurchaser_. After the purchase has been processed one of the two methods (_purchaseSuccess_, _purchaseFailed_) will be called by _AppcoinsPurchaser_. Those two methods are virtual and empty so you can override them and implement a custom version:
+5. Create _Purchaser_ class in Unity C# by inheriting from the _AppcoinsPurchaser_ class. When the _Purchaser_ class wants to buy a product it has to call _makePurchase_ method, with the SKU id of the product to buy, implemented by _AppcoinsPurchaser_. After the purchase has been processed one of the two methods (_purchaseSuccess_, _purchaseFailed_) will be called by _AppcoinsPurchaser_. Those two methods are virtual and empty so you can override them and implement a custom version:
 
 ```
 using UnityEngine;
@@ -85,16 +83,6 @@ public class Purchaser : AppcoinsPurchaser {
 			message.text="Sorry! Purchase failed for chocolate";
 		}
 	}
-
-	public override void RegisterSKUs()
-	{
-    //                      Name,       sku id,    price
-		AddSKU(new AppcoinsSKU("Chocolate", "chocolate", 0.1));
-		AddSKU(new AppcoinsSKU("Monster Drink", "monster", 0.1));
-		AddSKU(new AppcoinsSKU("Dodo", "dodo", 0.1));
-	}
-
-
 	//methods starts the purchase flow when you click their respective buttons to purchase snacks
 	public void buyDodo(){
     // MakePurchase receives the sku id of the product to buy
@@ -111,8 +99,23 @@ public class Purchaser : AppcoinsPurchaser {
 }
 
 ```
+6. _RegisterSKUs_ method has to be overridden by your _Purchaser_ class to register all the SKUs you want. This method will be called by _AppcoinsUnity_ To register a _SKU_ you can call the method _AddSKU_, that receives a _AppcoinsSKU_ object, already implemented at _AppcoinsPurchaser_). This object takes 3 parameters a string with the product name, a string with the product SKU and a float with the price in APPC.
 
-6. Create an object in your scene and add the purchaser script you created to it. Drag and drop the purchaser object to the slot where you have the _Purchaser Object_ on the _AppcoinsUnity_ prefab you added to your scene earlier.
+
+```
+
+	public override void RegisterSKUs()
+	{
+    //                      Name,       sku id,    price
+		AddSKU(new AppcoinsSKU("Chocolate", "chocolate", 0.1));
+		AddSKU(new AppcoinsSKU("Monster Drink", "monster", 0.1));
+		AddSKU(new AppcoinsSKU("Dodo", "dodo", 0.1));
+	}
+
+
+```
+
+7. Create an object in your scene and add the purchaser script you created to it. Drag and drop the purchaser object to the slot where you have the _Purchaser Object_ on the _AppcoinsUnity_ prefab you added to your scene earlier.
 
 ![picture](Screenshots/shot16.png)
 
@@ -186,6 +189,7 @@ If you already have a keystore:
 4. You have to provide the keystore password to allow Unity to read the key aliases.
 
 5. Pick the correct alias and provide it's password as well
+
  ![picture](Screenshots/keystore.png)
 
 6. You're done!
@@ -198,9 +202,11 @@ If you don't have a key already:
 5. Now pick a password and write it again to confirm
 
 6. Click the alias dropdown and then chose "Create a new key"
+
 ![picture](Screenshots/pickAlias.png)
 
 7. Fill in all the details and click "Create Key"
+
 ![picture](Screenshots/createAlias.png)
 
 8. Now go back to the alias dropdown and pick the alias you just created
