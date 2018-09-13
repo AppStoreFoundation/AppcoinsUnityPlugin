@@ -10,7 +10,7 @@ This plugin is developed from a fork of the unofficial unity plugin for AppCoins
 
 ## Integrating the plugin into your game
 
-1. Download the [plugin package file](https://github.com/AppStoreFoundation/AppcoinsUnityPlugin/blob/develop/AppCoins_Unity_Package.unitypackage) regarding your current Unity version. Open the package in your Unity project (double click the file or in Unity go to Assets -> Import Package -> Custom Package.... and find the file you just downloaded). If you don't want to import the 'AppcoinsUnity/Example' and the 'Resources' folders, make sure to untick them. Everything else is mandatory.
+1. Download the [plugin package file](https://github.com/AppStoreFoundation/asf-unity-plugin/releases) regarding your current Unity version. Open the package in your Unity project (double click the file or in Unity go to Assets -> Import Package -> Custom Package.... and find the file you just downloaded). If you don't want to import the 'AppcoinsUnity/Example' and the 'Resources' folders, make sure to untick them. Everything else is mandatory.
 
 ![picture](Screenshots/shot8.png)
 
