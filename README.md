@@ -1,10 +1,10 @@
-# AppCoins Unity Plugin
+# ASF AppCoins Unity Plugin
 
 ![picture](Screenshots/logos.png)
 
 This is the official Unity plugin for the ASF AppCoins Protocol that allows you to integrate ASF AppCoins In-App Billing or Proof-of-Attention Ads into your Unity Android game.
 
-## About AppCoins Unity Plugin
+## About ASF AppCoins Unity Plugin
 This plugin is developed from a fork of the unofficial unity plugin for AppCoins by [codeberg-io](https://github.com/codeberg-io/AppcoinsUnityPlugin).
  We thought it was a great initiative and decided to support the project and help all Unity developers who would be integrating the ASF AppCoins In-App Billing into their game.
 
