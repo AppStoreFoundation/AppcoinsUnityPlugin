@@ -1,5 +1,0 @@
-Issues:
-    - Instead of redirect output to a file make terminal process wait for a keypress before exit (when something is shows up on the stderr)??
-    - Make appcoins products' skuid uniques.
-    - Make appcoins unity prefab be able to change its name.
-    - Serializable scripts to store some information like paths when unity is shuted down.

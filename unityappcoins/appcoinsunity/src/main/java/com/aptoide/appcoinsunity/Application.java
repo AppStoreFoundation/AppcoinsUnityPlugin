@@ -65,10 +65,15 @@ public class Application extends android.app.Application {
 
         if(IABFlag) {
             Log.d("AppcoinsUnityPlugin", "IAB sdk initialized");
-            appCoinsSdk = new AppCoinsIabBuilder(developerAddress).withSkus(buildSkus())
-                    .withDebug(debugFlag)
-                    .createAppCoinsIab();
+            appCoinsSdk = GetAppCoinsIabBuilder(developerAddress);
         }
+    }
+
+    private static AppCoinsIab GetAppCoinsIabBuilder(String developerAddress)
+    {
+        return new AppCoinsIabBuilder(developerAddress).withSkus(buildSkus())
+                .withDebug(debugFlag)
+                .createAppCoinsIab();
     }
 
     private static List<SKU> buildSkus() {

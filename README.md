@@ -1,84 +1,123 @@
-# AppCoins Unity Plugin
+# ASF AppCoins Unity Plugin
 
 ![picture](Screenshots/logos.png)
 
-This is the official Unity plugin for the AppCoins Protocol that allows you to integrate AppCoins In-App Billing or Proof-of-Attention Ads into your Unity Android game.
+This is the official Unity plugin for the ASF AppCoins Protocol that allows you to integrate ASF AppCoins In-App Billing or Proof-of-Attention Ads into your Unity Android game.
 
-## About AppCoins Unity Plugin
+## About ASF AppCoins Unity Plugin
 This plugin is developed from a fork of the unofficial unity plugin for AppCoins by [codeberg-io](https://github.com/codeberg-io/AppcoinsUnityPlugin).
- We thought it was a great initiative and decided to support the project and help all Unity developers who would be integrating the AppCoins In-App Billing into their game.
+ We thought it was a great initiative and decided to support the project and help all Unity developers who would be integrating the ASF AppCoins In-App Billing into their game.
 
 ## Integrating the plugin into your game
 
-1. Download the plugin package [AppCoins_Unity_Package.unitypackage](https://github.com/AppStoreFoundation/AppcoinsUnityPlugin/blob/develop/AppCoins_Unity_Package.unitypackage) file and open the package in your Unity project (double click the file or in Unity go to Assets -> Import Package -> Custom Package.... and find the file you just downloaded). If you don't want to import the example, make sure to untick the example folder. Everything else is mandatory.
+1. Download the [plugin package file](https://github.com/AppStoreFoundation/asf-unity-plugin/releases) regarding your current Unity version. Open the package in your Unity project (double click the file or in Unity go to Assets -> Import Package -> Custom Package.... and find the file you just downloaded). If you don't want to import the 'AppcoinsUnity/Example' and the 'Resources' folders, make sure to untick them. Everything else is mandatory.
 
-![picture](Screenshots/shot2.png)
+![picture](Screenshots/shot8.png)
 
-2. From the Assets -> AppcoinsUnity -> Prefabs folder drag and drop the _AppcoinsUnity_ prefab into your scene or hierarchy window. If you want you can change the name of AppcoinsUnity gameobject. **NOTE: If the only change you are doing in your project before building is changing the name of AppcoinsUnity gameobject, you have to ckick "apply" in the inspector window in order to valid this change.**
+2. From the Assets -> AppcoinsUnity -> Prefabs folder drag and drop the _ASFAppcoinsUnity_ prefab into your scene or hierarchy window. If you want you can change the name of _ASFAppcoinsUnity_ gameobject.
 
-![picture](Screenshots/shot3.png)
+![picture](Screenshots/shot15.png)
 
-3. In the inspector window where you have _Receiving Address_, change the text to your AppCoins wallet address where you would like to receive your AppCoins.
+3. In the inspector window where you have _Receiving Address_, change the text to your ASF wallet address where you would like to receive your AppCoins.
 
 4. Check the _enable debug_ checkbox if you would like to be able to use testnets like Ropsten for testing your AppCoins In-App Billing integration.
 **Note: Uncheck this in production to avoid testnet purchases.**
 
-5. You need to create in-app products.
-To create an _AppcoinsProduct_ click Assets -> Create -> Appcoins Product, fill in the product info and click Apply. Everytime you make a change to the product you should click Apply. This will create the product in a folder called "Products" inside the Assets folder. Create as many as your in-app products.
-
-![picture](Screenshots/CreateAppcoinsProduct.png)
-
-6. Drag and drop all the products you created to the field on the _AppcoinsUnity_ gameobject where you have products.
-
-**Note: in the image below 3 products were created and added (Chocolate, Dodo and Monster Drink).**
-
-![picture](Screenshots/shot5.png)
-
-**Note: Checking "Add to list" while creating the product will add the product to the products list automatically for you**
-
-7. Create purchaser class in Unity C# by inheriting from the AppcoinsPurchaser Class:
+5. Create _Purchaser_ class in Unity C# by inheriting from the _AppcoinsPurchaser_ class. When the _Purchaser_ class wants to buy a product it has to call _makePurchase_ method, with the SKU id of the product to buy, implemented by _AppcoinsPurchaser_. After the purchase has been processed one of the two methods (_purchaseSuccess_, _purchaseFailed_) will be called by _AppcoinsPurchaser_. Those two methods are virtual and empty so you can override them and implement a custom version:
 
 ```
+using UnityEngine;
+using UnityEngine.UI;
 
 //add this namespace to your script to give you  access to the plugin classes.
 using Aptoide.AppcoinsUnity;
 
+//Inherit from the AppcoinsPurchaser Class
 public class Purchaser : AppcoinsPurchaser {
 
-	//method gets called on successful purchases
-	public override void purchaseSuccess (string skuid)
+	public Text message;
+
+	void Start()
 	{
-		base.purchaseSuccess (skuid);
-		//purchase is successful release the product
+		message.text = "Welcome to cody snacks shop!";
 	}
 
-	//method gets called on failed purchases
-	public override void purchaseFailure (string skuid)
+	public override void PurchaseSuccess (string skuid)
 	{
-		base.purchaseFailure (skuid);
+		base.PurchaseSuccess (skuid);
+		//purchase is successful release the product
+
+		if(skuid.Equals("dodo"))
+		{
+		message.text="Thanks! You bought dodo";
+		}
+
+		else if(skuid.Equals("monster"))
+		{
+		message.text="Thanks! You bought monster drink";
+		}
+
+		else if(skuid.Equals("chocolate"))
+		{
+			message.text="Thanks! You bought chocolate";
+		}
+	}
+
+	public override void PurchaseFailure (string skuid)
+	{
+		base.PurchaseFailure (skuid);
 		//purchase failed perhaps show some error message
 
-	}
+		if(skuid.Equals("dodo"))
+		{
+			message.text="Sorry! Purchase failed for dodo";
+		}
 
-	//example methods to initiate a purchase flow
-	//the string parameter of the makePurchase method is the skuid you specified in the inspector for each product
+		else if(skuid.Equals("monster"))
+		{
+			message.text="Sorry! Purchase failed for drink";
+		}
+
+		else if(skuid.Equals("chocolate"))
+		{
+			message.text="Sorry! Purchase failed for chocolate";
+		}
+	}
+	//methods starts the purchase flow when you click their respective buttons to purchase snacks
 	public void buyDodo(){
-		makePurchase ("dodo");
+    // MakePurchase receives the sku id of the product to buy
+		MakePurchase("dodo");
 	}
 
 	public void buyMonster(){
-		makePurchase ("monster");
+		MakePurchase("monster");
 	}
 
 	public void buyChocolate(){
-		makePurchase ("chocolate");
+		MakePurchase("chocolate");
 	}
 }
+
+```
+6. _RegisterSKUs_ method has to be overridden by your _Purchaser_ class to register all the SKUs you want. This method will be called by _AppcoinsUnity_ To register a _SKU_ you can call the method _AddSKU_, that receives a _AppcoinsSKU_ object, already implemented at _AppcoinsPurchaser_). This object takes 3 parameters a string with the product name, a string with the product SKU and a float with the price in APPC.
+
+
 ```
 
-8. Create an object in your scene and add the purchaser script you created to it. Drag and drop the purchaser object to the slot where you have the _Purchaser Object_ on the _AppcoinsUnity_ prefab you added to your scene earlier.
+	public override void RegisterSKUs()
+	{
+    //                      Name,       sku id,    price
+		AddSKU(new AppcoinsSKU("Chocolate", "chocolate", 0.1));
+		AddSKU(new AppcoinsSKU("Monster Drink", "monster", 0.1));
+		AddSKU(new AppcoinsSKU("Dodo", "dodo", 0.1));
+	}
 
-![picture](Screenshots/shot6.png)
+
+```
+
+7. Create an object in your scene and add the purchaser script you created to it. Drag and drop the purchaser object to the slot where you have the _Purchaser Object_ on the _AppcoinsUnity_ prefab you added to your scene earlier.
+
+![picture](Screenshots/shot16.png)
 
 ## To build the project
 
@@ -103,7 +142,7 @@ On the _Player Settings_ window:
 
 You should have your game running on the phone!
 
-**Unity 2018.1.X and below (till Unity 5.X)**
+**Unity 5.6 (and above)**
 
 1. Close the _Player Settings_ window
 
@@ -113,11 +152,11 @@ You should have your game running on the phone!
 
 4. This popup will show up
 
-![picture](Screenshots/CustomBuildSettings.png)
+![picture](Screenshots/shot12.png)
 
 5. The gradle path should be picked from the path to your Android Studio installation
 
-6. The adb path will be picked by you (assuming you have Android SDK installed)
+6. The adb path will be picked automatically (assuming you have Android SDK path specified in Unity)
 
 7. Pick the scenes you want to include. The ones added to the build settings will automatically be selected for you
 
@@ -127,11 +166,13 @@ You should have your game running on the phone!
   FolderYouChoseToBuildTo/ProjectName/build/outputs/apk/
   in a subfolder called debug or release, depending on build settings)
 
-9. When you pick the folder the build process will start. The normal build process will happen and then the custom build process will kick in opening a terminal window. Unity might seem to be not responding but worry not! This is normal because it's waiting for the terminal processes to finish.
+9. When you pick the folder the build process will start. The normal build process will happen and then the custom build process will kick in opening a terminal window. Unity might seem to be not responding but not worry! This is normal because it's waiting for the terminal processes to finish.
 
 10. If you ticked _Install build when done?_ make sure you have your phone connected to the computer and that you unlock it to allow ADB to run
 
-![picture](Screenshots/BuildDone.png)
+  a. If you also ticked _Run build when done?_ after the installation the game will be launched automatically.
+
+![picture](Screenshots/shot13.png)
 
 11. The build process completed. You can run the app on your phone!
 
@@ -148,6 +189,7 @@ If you already have a keystore:
 4. You have to provide the keystore password to allow Unity to read the key aliases.
 
 5. Pick the correct alias and provide it's password as well
+
  ![picture](Screenshots/keystore.png)
 
 6. You're done!
@@ -160,9 +202,11 @@ If you don't have a key already:
 5. Now pick a password and write it again to confirm
 
 6. Click the alias dropdown and then chose "Create a new key"
+
 ![picture](Screenshots/pickAlias.png)
 
 7. Fill in all the details and click "Create Key"
+
 ![picture](Screenshots/createAlias.png)
 
 8. Now go back to the alias dropdown and pick the alias you just created
@@ -197,7 +241,7 @@ To test your purchases, just follow the normal flow you do to trigger them. When
 
 Trying to make the purchase through the Editor should display a popup like this:
 
-![picture](Screenshots/editorPopup.png)
+![picture](Screenshots/shot14.png)
 
 Pressing "Test success" will go through with the flow as if the purchase was successful (_purchaseSuccess_ on _Purchaser_ will be called).
 

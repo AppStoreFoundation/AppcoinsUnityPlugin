@@ -1,18 +1,21 @@
-﻿using UnityEditor;
+using UnityEditor;
 using UnityEngine;
 using System;
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 
+
 public class ExportPackageAutomatically : ScriptableObject
 {
+
     [MenuItem("Export Package/Unity")]
     public static void ExportFromUnity()
     {
         // Just the file name with extension
         List<string> filesToRemove = new List<string> {
             "ExportPackageAutomatically.cs",
+            "PackageInfo.cs",
             "ProcessCompleted.out",
             "BashCommand.sh",
             "ProcessError.out",
@@ -25,6 +28,9 @@ public class ExportPackageAutomatically : ScriptableObject
         // Complete path to folder to filter out (starting from Assets)
         List<string> foldersToRemove = new List<string> {
             "Assets/Products"
+            ,"Assets/AppcoinsUnity/Scripts/Editor/Tests"
+            ,"Assets/StompyRobot"
+            ,"Assets/Scenes"
         };
 
         int pathToRemove = (Path.GetDirectoryName(Application.dataPath) + "/").Length;
@@ -81,10 +87,18 @@ public class ExportPackageAutomatically : ScriptableObject
 
         string packagePath = Application.dataPath +
                                         "/../../" + 
-                                        "AppCoins_Unity_Package.unitypackage";
+                                        PackageInfo.GetPackageName() + ".unitypackage";
         
         ExportPackageOptions options = ExportPackageOptions.Recurse;
         AssetDatabase.ExportPackage(filesToExport.ToArray(), packagePath, options);
+
+        //Check if we need to copy the exported package to the main repo
+        if (PackageInfo.ShouldCopyToMainRepo()) {
+            packagePath = Application.dataPath +
+                                        "/../../../asf-unity-plugin/" + 
+                                        PackageInfo.GetPackageName() + ".unitypackage";
+            AssetDatabase.ExportPackage(filesToExport.ToArray(), packagePath, options);            
+        }
 
         UnityEngine.Debug.Log("Export done successfully");
     }
