@@ -1,21 +1,25 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
+using System.Collections.Generic;
+
 using Aptoide.AppcoinsUnity;
 
 //Inherit from the AppcoinsPurchaser Class
 public class Purchaser : AppcoinsPurchaser {
 
 	public Text message;
+	public List<AppcoinsSKU> skus;
 
 	void Start()
 	{
 		message.text = "Welcome to cody snacks shop!";
 	}
 
-	public override void PurchaseSuccess (string skuid)
+	public override void PurchaseSuccess (AppcoinsSKU sku)
 	{
-		base.PurchaseSuccess (skuid);
+		string skuid = sku.GetSKUId();
+		base.PurchaseSuccess (sku);
 		//purchase is successful release the product
 
 		if(skuid.Equals("dodo"))
@@ -34,9 +38,10 @@ public class Purchaser : AppcoinsPurchaser {
 		}
 	}
 
-	public override void PurchaseFailure (string skuid)
+	public override void PurchaseFailure (AppcoinsSKU sku)
 	{
-		base.PurchaseFailure (skuid);
+		string skuid = sku.GetSKUId();
+		base.PurchaseFailure (sku);
 		//purchase failed perhaps show some error message
 
 		if(skuid.Equals("dodo"))
@@ -57,22 +62,28 @@ public class Purchaser : AppcoinsPurchaser {
 
 	public override void RegisterSKUs()
 	{
-		AddSKU(new AppcoinsSKU("Chocolate", "chocolate", 0.1));
-		AddSKU(new AppcoinsSKU("Monster Drink", "monster", 0.1));
-		AddSKU(new AppcoinsSKU("Dodo", "dodo", 0.1));
+		skus = new List<AppcoinsSKU>();
+		skus.Add(new AppcoinsSKU("Chocolate", "chocolate", 0.1));
+		skus.Add(new AppcoinsSKU("Monster Drink", "monster", 0.1));
+		skus.Add(new AppcoinsSKU("Dodo", "dodo", 0.1));
+
+		foreach (AppcoinsSKU sku in skus)
+		{
+			AddSKU(sku);
+		}
 	}
 
 
 	//methods starts the purchase flow when you click their respective buttons to purchase snacks
 	public void buyDodo(){
-		MakePurchase("dodo");
+		MakePurchase(skus.Find(sku => sku.GetSKUId().Equals("dodo")));
 	}
 
 	public void buyMonster(){
-		MakePurchase("monster");
+		MakePurchase(skus.Find(sku => sku.GetSKUId().Equals("monster")));
 	}
 
 	public void buyChocolate(){
-		MakePurchase("chocolate");
+		MakePurchase(skus.Find(sku => sku.GetSKUId().Equals("chocolate")));
 	}
 }
