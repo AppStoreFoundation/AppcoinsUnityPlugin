@@ -9,7 +9,7 @@ using Aptoide.AppcoinsUnity;
 public class Purchaser : AppcoinsPurchaser {
 
 	public Text message;
-	public List<AppcoinsSKU> skus;
+	private List<AppcoinsSKU> skus;
 
 	void Start()
 	{
@@ -18,21 +18,20 @@ public class Purchaser : AppcoinsPurchaser {
 
 	public override void PurchaseSuccess (AppcoinsSKU sku)
 	{
-		string skuid = sku.GetSKUId();
 		base.PurchaseSuccess (sku);
 		//purchase is successful release the product
 
-		if(skuid.Equals("dodo"))
+		if(sku.GetSKUId().Equals("dodo"))
 		{
 		message.text="Thanks! You bought dodo";
 		}
 
-		else if(skuid.Equals("monster"))
+		else if(sku.GetSKUId().Equals("monster"))
 		{
 		message.text="Thanks! You bought monster drink";
 		}
 
-		else if(skuid.Equals("chocolate"))
+		else if(sku.GetSKUId().Equals("chocolate"))
 		{
 			message.text="Thanks! You bought chocolate";
 		}
@@ -40,21 +39,20 @@ public class Purchaser : AppcoinsPurchaser {
 
 	public override void PurchaseFailure (AppcoinsSKU sku)
 	{
-		string skuid = sku.GetSKUId();
 		base.PurchaseFailure (sku);
 		//purchase failed perhaps show some error message
 
-		if(skuid.Equals("dodo"))
+		if(sku.GetSKUId().Equals("dodo"))
 		{
 			message.text="Sorry! Purchase failed for dodo";
 		}
 
-		else if(skuid.Equals("monster"))
+		else if(sku.GetSKUId().Equals("monster"))
 		{
 			message.text="Sorry! Purchase failed for drink";
 		}
 
-		else if(skuid.Equals("chocolate"))
+		else if(sku.GetSKUId().Equals("chocolate"))
 		{
 			message.text="Sorry! Purchase failed for chocolate";
 		}
@@ -62,17 +60,15 @@ public class Purchaser : AppcoinsPurchaser {
 
 	public override void RegisterSKUs()
 	{
-		skus = new List<AppcoinsSKU>();
 		skus.Add(new AppcoinsSKU("Chocolate", "chocolate", 0.1));
 		skus.Add(new AppcoinsSKU("Monster Drink", "monster", 0.1));
 		skus.Add(new AppcoinsSKU("Dodo", "dodo", 0.1));
 
-		foreach (AppcoinsSKU sku in skus)
+		foreach(AppcoinsSKU sku in skus)
 		{
 			AddSKU(sku);
 		}
 	}
-
 
 	//methods starts the purchase flow when you click their respective buttons to purchase snacks
 	public void buyDodo(){

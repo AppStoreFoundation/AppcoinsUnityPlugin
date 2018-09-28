@@ -23,13 +23,11 @@ This plugin is developed from a fork of the unofficial unity plugin for AppCoins
 4. Check the _enable debug_ checkbox if you would like to be able to use testnets like Ropsten for testing your AppCoins In-App Billing integration.
 **Note: Uncheck this in production to avoid testnet purchases.**
 
-5. Create _Purchaser_ class in Unity C# by inheriting from _AppcoinsPurchaser_. When the _Purchaser_ class wants to buy a product it has to call _MakePurchase_ method and passing his SKU ID or the AppcoinsSKU object itself. This method is implemented at _AppcoinsPurchaser_. After the purchase has been processed one of the two methods (_purchaseSuccess_, _purchaseFailed_) will be called by _AppcoinsPurchaser_. Those two methods are virtual and empty so you can override them and implement a custom version:
+5. Create _Purchaser_ class in Unity C# by inheriting from the _AppcoinsPurchaser_ class. When the _Purchaser_ class wants to buy a product it has to call _makePurchase_ method, with the SKU id of the product to buy, implemented by _AppcoinsPurchaser_. After the purchase has been processed one of the two methods (_purchaseSuccess_, _purchaseFailed_) will be called by _AppcoinsPurchaser_. Those two methods are virtual and empty so you can override them and implement a custom version:
 
 ```
 using UnityEngine;
 using UnityEngine.UI;
-
-using Sytem.Collections.Generic;
 
 //add this namespace to your script to give you  access to the plugin classes.
 using Aptoide.AppcoinsUnity;
@@ -38,9 +36,6 @@ using Aptoide.AppcoinsUnity;
 public class Purchaser : AppcoinsPurchaser {
 
 	public Text message;
-
-    // List with all SKUs
-    public List<AppcoinsSKU> skus;
 
 	void Start()
 	{
@@ -91,16 +86,17 @@ public class Purchaser : AppcoinsPurchaser {
 	//methods starts the purchase flow when you click their respective buttons to purchase snacks
 	public void buyDodo(){
     // MakePurchase receives the sku id of the product to buy
-		MakePurchase(skus.Find(sku => sku.GetSKUId().Equals("dodo")));
+		MakePurchase("dodo");
 	}
 
 	public void buyMonster(){
-		MakePurchase(skus.Find(sku => sku.GetSKUId().Equals("monster")));
+		MakePurchase("monster");
 	}
 
 	public void buyChocolate(){
 		MakePurchase("chocolate");
 	}
+}
 
 ```
 6. _RegisterSKUs_ method has to be overridden by your _Purchaser_ class to register all the SKUs you want. This method will be called by _AppcoinsUnity_ To register a _SKU_ you can call the method _AddSKU_, that receives a _AppcoinsSKU_ object, already implemented at _AppcoinsPurchaser_). This object takes 3 parameters a string with the product name, a string with the product SKU and a float with the price in APPC.
@@ -110,17 +106,12 @@ public class Purchaser : AppcoinsPurchaser {
 
 	public override void RegisterSKUs()
 	{
-    skus = new List<AppcoinsSKU>();
-		skus.Add(new AppcoinsSKU("Chocolate", "chocolate", 0.1));
-		skus.Add(new AppcoinsSKU("Monster Drink", "monster", 0.1));
-		skus.Add(new AppcoinsSKU("Dodo", "dodo", 0.1));
-
-		foreach (AppcoinsSKU sku in skus)
-		{
-			AddSKU(sku);
-		}
+    //                      Name,       sku id,    price
+		AddSKU(new AppcoinsSKU("Chocolate", "chocolate", 0.1));
+		AddSKU(new AppcoinsSKU("Monster Drink", "monster", 0.1));
+		AddSKU(new AppcoinsSKU("Dodo", "dodo", 0.1));
 	}
-}
+
 
 ```
 
